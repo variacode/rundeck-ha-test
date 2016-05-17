@@ -17,10 +17,11 @@ ENV USER=rundeck \
 #create rundeck user
 RUN adduser --shell /bin/bash --home ${HOME} --gecos "" --disabled-password ${USER} && passwd -d ${USER} && addgroup ${USER} sudo
 
-USER ${USER}
 
 #COPY ./rundeckpro-installer /home/rundeck/rundeckpro-installer
-ADD rdpro-installer ${TOMCAT_BASE}/rdpro-installer
+COPY rdpro-installer ${TOMCAT_BASE}/rdpro-installer
+RUN chown -R ${USER}:${USER} ${HOME}
+USER ${USER}
 WORKDIR ${TOMCAT_BASE}
 RUN ./rdpro-installer install-all
 
