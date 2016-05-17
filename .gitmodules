@@ -1,0 +1,3 @@
+[submodule "rundeckpro-installer"]
+	path = rundeckpro-installer
+	url = https://github.com/variacode/rundeckpro-installer/
