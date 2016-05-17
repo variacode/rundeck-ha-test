@@ -33,8 +33,8 @@ COPY rdpro-installer ${TOMCAT_BASE}/rdpro-installer
 RUN chown -R ${USER}:${USER} ${HOME}
 USER ${USER}
 WORKDIR ${TOMCAT_BASE}
-RUN ./rdpro-installer install-all
+RUN ./rdpro-installer install-all --java-opts "-Djava.security.egd=file:/dev/./urandom"
 
 EXPOSE 4440 4443
 
-CMD ./rdpro-installer start --rdeck-base ${TOMCAT_BASE} && tail -F ${TOMCAT_BASE}/server/logs
+CMD ./rdpro-installer start --rdeck-base ${TOMCAT_BASE} && tail -F ${TOMCAT_BASE}/server/logs/catalina.out
