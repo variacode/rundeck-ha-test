@@ -35,3 +35,6 @@ USER ${USER}
 WORKDIR ${TOMCAT_BASE}
 RUN ./rdpro-installer install-all
 
+EXPOSE 4440 4443
+
+CMD ./rdpro-installer start --rdeck-base ${TOMCAT_BASE} && tail -F ${TOMCAT_BASE}/server/logs
