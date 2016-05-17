@@ -4,7 +4,17 @@ FROM ubuntu:16.04
 #RUN sed -i.bak -e "s:archive.ubuntu.com:cl.archive.ubuntu.com:g" /etc/apt/sources.list
 #general package configuration
 RUN apt-get -y update && apt-get -y dist-upgrade && apt-get -y autoremove
-RUN apt-get -y install sudo unzip curl xmlstarlet git netcat-traditional software-properties-common debconf-utils
+RUN apt-get -y install \
+  sudo \
+  unzip \
+  curl \
+  xmlstarlet \
+  git \
+  netcat-traditional \
+  software-properties-common \
+  debconf-utils \
+  uuid-runtime
+
 # Install Oracle JVM
 RUN add-apt-repository -y ppa:webupd8team/java && apt-get update
 RUN echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | sudo debconf-set-selections && apt-get install -y oracle-java8-installer
