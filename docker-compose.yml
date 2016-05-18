@@ -1,0 +1,32 @@
+version: '2'
+
+services:
+  rundeck1:
+    build: .
+    ports:
+      - "4440:4440"
+    depends_on:
+      - mysql
+    environment:
+      - RUNDECK_NODE=rundeck1
+      - PORT=4440
+      - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
+  rundeck2:
+    build: .
+    ports:
+      - "4441:4441"
+    depends_on:
+      - mysql
+    environment:
+      - RUNDECK_NODE=rundeck2
+      - PORT=4441
+      - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
+  mysql:
+    image: mysql:5.5
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=rundeck
+      - MYSQL_USER=rundeck
+      - MYSQL_PASSWORD=rundeck

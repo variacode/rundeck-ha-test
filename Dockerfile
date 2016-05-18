@@ -1,7 +1,6 @@
 FROM ubuntu:16.04
 
 # Change APT repo
-#RUN sed -i.bak -e "s:archive.ubuntu.com:cl.archive.ubuntu.com:g" /etc/apt/sources.list
 #general package configuration
 RUN apt-get -y update && apt-get -y dist-upgrade && apt-get -y autoremove
 RUN apt-get -y install \
@@ -20,21 +19,20 @@ RUN add-apt-repository -y ppa:webupd8team/java && apt-get update
 RUN echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | sudo debconf-set-selections && apt-get install -y oracle-java8-installer
 
 #Set up env
-ENV USER=rundeck \
-    HOME=/home/rundeck \
-    TOMCAT_BASE=/home/rundeck/tomcat
+ENV USER rundeck
+ENV HOME /home/rundeck
 
 #create rundeck user
 RUN adduser --shell /bin/bash --home ${HOME} --gecos "" --disabled-password ${USER} && passwd -d ${USER} && addgroup ${USER} sudo
 
+COPY rdpro-installer ${HOME}/rdpro-installer
+COPY install-and-run.sh ${HOME}/install-and-run
 
-#COPY ./rundeckpro-installer /home/rundeck/rundeckpro-installer
-COPY rdpro-installer ${TOMCAT_BASE}/rdpro-installer
 RUN chown -R ${USER}:${USER} ${HOME}
+RUN chmod +x ${HOME}/install-and-run
+
 USER ${USER}
-WORKDIR ${TOMCAT_BASE}
-RUN ./rdpro-installer install-all --java-opts "-Djava.security.egd=file:/dev/./urandom"
+WORKDIR ${HOME}
+VOLUME ${HOME}
 
-EXPOSE 4440 4443
-
-CMD ./rdpro-installer start --rdeck-base ${TOMCAT_BASE} && tail -F ${TOMCAT_BASE}/server/logs/catalina.out
+CMD ${HOME}/install-and-run
