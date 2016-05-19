@@ -1,8 +1,9 @@
 version: '2'
 
+
 services:
   rundeck1:
-    build: .
+    build: dockers/rundeck/
     ports:
       - "4440:4440"
     depends_on:
@@ -11,8 +12,10 @@ services:
       - RUNDECK_NODE=rundeck1
       - PORT=4440
       - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
+    volumes:
+      - /logs:/home/rundeck/var/logs/:rw
   rundeck2:
-    build: .
+    build: dockers/rundeck/
     ports:
       - "4441:4441"
     depends_on:
@@ -21,6 +24,8 @@ services:
       - RUNDECK_NODE=rundeck2
       - PORT=4441
       - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
+    volumes:
+      - ./logs:/home/rundeck/var/logs/:rw
   mysql:
     image: mysql:5.5
     ports:
