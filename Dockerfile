@@ -46,13 +46,11 @@ RUN chown -R $USERNAME:$USERNAME $HOME && \
 #Build installer
 ENV LOGNAME=$USERNAME TERM=xterm-256color
 WORKDIR $HOME/rundeckpro-installer
-RUN sed -i.bak -e "s|securerandom.source=file:/dev/random|securerandom.source=file:/dev/urandom|" \
-        /usr/lib/jvm/java-8-oracle/jre/lib/security/java.security && \
+RUN sed -i.bak -e "s|securerandom.source=file:/dev/random|securerandom.source=file:/dev/urandom|" /usr/lib/jvm/java-8-oracle/jre/lib/security/java.security && \
     ./build.sh --bundle && \
     mv -fv rdpro-installer $HOME/rdpro-installer && \
     rm -rf /tmp/it_* /tmp/rdpro* /tmp/RDECK*
 
-# Set Run Context
 # Set Run Context
 USER $USERNAME
 WORKDIR $HOME
