@@ -10,6 +10,9 @@
 - docker build -t rdeck . 
 - docker run --rm -it rdeck bash
 
+#### PARA loguearse a una maquina (ejemplo a rundeck2)
+docker-compose exec --user rundeck rundeck2 bash -l
+
 ## TODO LIST LONG VERSION
 
 1. [X] hacer que ambos rundecks miren a la misma base de datos
