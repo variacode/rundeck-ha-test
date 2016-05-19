@@ -1,31 +1,42 @@
 version: '2'
 
-
 services:
   rundeck1:
     build: dockers/rundeck/
-    ports:
-      - "4440:4440"
     depends_on:
       - mysql
     environment:
       - RUNDECK_NODE=rundeck1
-      - PORT=4440
+      - HTTP_PORT=4440
+      - HTTPS_PORT=4443
       - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
     volumes:
-      - /logs:/home/rundeck/var/logs/:rw
+      - ./logs:/home/rundeck/var/logs/:rw
+    networks:
+      localnet:
+        ipv4_address: 192.168.234.10
+    ports:
+      - "4440"
+      - "4443"
+
   rundeck2:
     build: dockers/rundeck/
-    ports:
-      - "4441:4441"
     depends_on:
       - mysql
     environment:
       - RUNDECK_NODE=rundeck2
-      - PORT=4441
+      - HTTP_PORT=4440
+      - HTTPS_PORT=4443
       - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
     volumes:
       - ./logs:/home/rundeck/var/logs/:rw
+    networks:
+      localnet:
+        ipv4_address: 192.168.234.11
+    ports:
+      - "4440"
+      - "4443"
+
   mysql:
     image: mysql:5.5
     ports:
@@ -35,3 +46,23 @@ services:
       - MYSQL_DATABASE=rundeck
       - MYSQL_USER=rundeck
       - MYSQL_PASSWORD=rundeck
+
+  testnode:
+    build: dockers/testnode/
+    environment:
+      - RUNDECK_NODE=rundecktest
+    volumes:
+      - ./logs:/home/rundeck/var/logs/:rw
+    networks:
+      localnet:
+        ipv4_address: 192.168.234.2
+
+
+networks:
+  localnet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 192.168.234.0/24
+        gateway: 192.168.234.1

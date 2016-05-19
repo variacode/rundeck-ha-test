@@ -8,8 +8,9 @@
 sudo chown -R rundeck:rundeck .
 
 ./rdpro-installer install-all \
-  -[-java-]opts "-Djava.security.egd=file:/dev/./urandom" \
-  --http-port $PORT \
+  --java-opts "-Djava.security.egd=file:/dev/./urandom" \
+  --http-port $HTTP_PORT \
+  --https-port $HTTPS_PORT \
   --keystore-generate true \
   --keystore-file $HOME/etc/truststore \
   --keystore-pass rundeck \
@@ -19,11 +20,16 @@ sudo chown -R rundeck:rundeck .
   --datasource-username rundeck \
   --datasource-password rundeck \
   --server-hostname $RUNDECK_NODE \
+  --server-name $RUNDECK_NODE \
   --server-url "http://$RUNDECK_NODE:$PORT/rundeckpro-dr"
 
+# Enable clustermode
 ./rdpro-installer configure-clustermode \
   --enabled true \
   --rdeck-base $HOME
+
+# agregar configure-uuid para las conf de HA
+
 
 ./rdpro-installer configure-logs-dir \
   --logs-dir $HOME/rundeck/var/logs
