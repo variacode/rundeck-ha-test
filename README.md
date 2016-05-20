@@ -21,9 +21,9 @@ docker-compose exec --user rundeck rundeck2 bash -l
     3. http://support.simplifyops.com/customer/portal/articles/2066438-install-pro-ha
 2. que inicien en modo cluster [X]
     1. http://support.simplifyops.com/customer/portal/articles/2066438-install-pro-ha
-3. agregar un balanceador a los dockers -- RP:ongoing
+3. que compartan los logs [X]
+4. agregar un balanceador a los dockers -- RP:ongoing
     1. https://slack-redir.net/link?url=http%3A%2F%2Fwww.tokiwinter.com%2Fhighly-available-load-balancing-of-apache-tomcat-using-haproxy-stunnel-and-keepalived%2F&v=3
-3. que compartan los logs
 4. instaler ssh en los dockers?
     1. https://docs.docker.com/engine/admin/using_supervisord/
     2. supervisord puede lanzar tu wea como servicio

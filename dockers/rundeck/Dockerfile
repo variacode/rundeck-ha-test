@@ -5,8 +5,6 @@ RUN sed -i.bak -e "s:archive.ubuntu.com:ftp.tecnoera.com:g" /etc/apt/sources.lis
 
 ## General package configuration
 RUN apt-get -y update && \
-    apt-get -y dist-upgrade && \
-    apt-get -y autoremove && \
     apt-get -y install \
         sudo \
         unzip \
@@ -17,12 +15,14 @@ RUN apt-get -y update && \
         software-properties-common \
         debconf-utils \
         uuid-runtime \
-        ncurses-bin
+        ncurses-bin && \
+    apt-get -y autoremove
 
 ## Install Oracle JVM
-RUN add-apt-repository -y ppa:webupd8team/java && \
+RUN \
+  echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
+  add-apt-repository -y ppa:webupd8team/java && \
   apt-get update && \
-  echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | sudo debconf-set-selections && \
   apt-get install -y oracle-java8-installer
 
 ## Set up env
@@ -54,4 +54,4 @@ RUN sed -i.bak -e "s|securerandom.source=file:/dev/random|securerandom.source=fi
 USER $USERNAME
 WORKDIR $HOME
 
-CMD $HOME/wait-for-it.sh mysql:3306 -t 120 -- $HOME/install-and-run.sh
+ENTRYPOINT $HOME/wait-for-it.sh mysql:3306 -t 10 -- $HOME/install-and-run.sh
