@@ -12,13 +12,13 @@ services:
       - HTTPS_PORT=4443
       - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
     volumes:
-      - ./logs:/home/rundeck/var/logs/:rw
+      - logs:/logs
     networks:
       localnet:
         ipv4_address: 192.168.234.10
     ports:
-      - "4440"
-      - "4443"
+      - "4440:4440"
+      - "4443:4443"
 
   rundeck2:
     hostname: rundeck2
@@ -27,17 +27,17 @@ services:
       - mysql
     environment:
       - RUNDECK_NODE=rundeck2
-      - HTTP_PORT=4440
-      - HTTPS_PORT=4443
+      - HTTP_PORT=4441
+      - HTTPS_PORT=4444
       - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
     volumes:
-      - ./logs:/home/rundeck/var/logs/:rw
+      - logs:/logs
     networks:
       localnet:
         ipv4_address: 192.168.234.11
     ports:
-      - "4440"
-      - "4443"
+      - "4441:4441"
+      - "4444:4444"
 
   mysql:
     image: mysql:5.5
@@ -60,7 +60,6 @@ services:
       localnet:
         ipv4_address: 192.168.234.2
 
-
 networks:
   localnet:
     driver: bridge
@@ -69,3 +68,6 @@ networks:
       config:
       - subnet: 192.168.234.0/24
         gateway: 192.168.234.1
+
+volumes:
+  logs:

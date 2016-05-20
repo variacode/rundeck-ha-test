@@ -34,16 +34,13 @@ RUN adduser --shell /bin/bash --home $HOME --gecos "" --disabled-password $USERN
     passwd -d $USERNAME && \
     addgroup $USERNAME sudo
 
-## Copy files
-RUN mkdir -p $HOME/var/logs
-VOLUME $HOME/var/log
-
 #COPY rdpro-installer $HOME/rdpro-installer
 COPY rundeckpro-installer $HOME/rundeckpro-installer
-COPY scripts/install-and-run.sh $HOME/install-and-run
+COPY scripts/install-and-run.sh $HOME/install-and-run.sh
+COPY wait-for-it/wait-for-it.sh $HOME/wait-for-it.sh
 
-RUN chown -R $USERNAME:$USERNAME $HOME && \
-    chmod +x $HOME/install-and-run $HOME/
+RUN chown -R $USERNAME:$USERNAME $HOME
+RUN chmod +x $HOME/install-and-run.sh $HOME/wait-for-it.sh
 
 #Build installer
 ENV LOGNAME=$USERNAME TERM=xterm-256color
@@ -56,6 +53,5 @@ RUN sed -i.bak -e "s|securerandom.source=file:/dev/random|securerandom.source=fi
 # Set Run Context
 USER $USERNAME
 WORKDIR $HOME
-VOLUME $HOME
 
-CMD $HOME/install-and-run
+CMD $HOME/wait-for-it.sh mysql:3306 -t 120 -- $HOME/install-and-run.sh

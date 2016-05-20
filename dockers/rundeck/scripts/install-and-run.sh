@@ -5,7 +5,7 @@
 # if [[ ! $RUNDECK_NODE ]] ; then RUNDECK_NODE=rundeck1 ; fi
 
 # esto es necesario para compartir los archivos, deberiamos llevarnos esto a otro servicio
-sudo chown -R rundeck:rundeck .
+sudo chown -R rundeck:rundeck /logs
 
 ./rdpro-installer install-all \
   --java-opts "-Djava.security.egd=file:/dev/./urandom" \
@@ -29,10 +29,8 @@ sudo chown -R rundeck:rundeck .
   --rdeck-base $HOME
 
 # agregar configure-uuid para las conf de HA
-
-
 ./rdpro-installer configure-logs-dir \
-  --logs-dir $HOME/rundeck/var/logs
+  --logs-dir /logs \
   --rdeck-base $HOME
 
 ./rdpro-installer start --rdeck-base $HOME \
