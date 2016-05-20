@@ -17,17 +17,25 @@ docker-compose exec --user rundeck rundeck2 bash -l
 
 1. hacer que ambos rundecks miren a la misma base de datos [X]
     1. https://github.com/ahonor/rundeck-vagrant/tree/master/primary-secondary-failover
-    2. https://github.com/ahonor/rundeck-vagrant/blob/master/primary-secondary-failover/install-rundeck.sh
-    3. http://support.simplifyops.com/customer/portal/articles/2066438-install-pro-ha
-2. que inicien en modo cluster [X]
+    1. https://github.com/ahonor/rundeck-vagrant/blob/master/primary-secondary-failover/install-rundeck.sh
     1. http://support.simplifyops.com/customer/portal/articles/2066438-install-pro-ha
-3. que compartan los logs [X]
-4. agregar un balanceador a los dockers -- RP:ongoing
-    1. https://slack-redir.net/link?url=http%3A%2F%2Fwww.tokiwinter.com%2Fhighly-available-load-balancing-of-apache-tomcat-using-haproxy-stunnel-and-keepalived%2F&v=3
-4. instaler ssh en los dockers?
-    1. https://docs.docker.com/engine/admin/using_supervisord/
-    2. supervisord puede lanzar tu wea como servicio
-    3. si instals esto con nodervisor vas a poder parar tambien los servicios!!
-6. agregar un servidor web con las tareas para comprobar que todo anda o no
-    1. este servidor necesita un index.html donde especifique los demas recursos de la prueba
+1. que inicien en modo cluster [X]
+    1. http://support.simplifyops.com/customer/portal/articles/2066438-install-pro-ha
+1. que compartan los logs [X]
+1. agregar un balanceador a los dockers -- RP:ongoing
+    1. [Rundeck instructions about HA are HERE!!](http://support.simplifyops.com/customer/portal/articles/2066438-install-pro-ha)
+    1. [Ejemplo que Luis usó para montar un load balancer](https://slack-redir.net/link?url=http%3A%2F%2Fwww.tokiwinter.com%2Fhighly-available-load-balancing-of-apache-tomcat-using-haproxy-stunnel-and-keepalived%2F&v=3)
+    1. [Using nginx as a load balancer](http://nginx.org/en/docs/http/load_balancing.html)
+    1. [nginx Docker image](https://hub.docker.com/_/nginx/)
+1. instaler ssh en los dockers?
+    1. [Using supervisord in Docker by Docker dudes](https://docs.docker.com/engine/admin/using_supervisord/)
+    1. supervisord puede lanzar tu wea como servicio
+    1. si instals esto con nodervisor vas a poder parar tambien los servicios!!
+1. respecto de lanzar todo esto desde gradle
+    1. [Un Hipster, probablemente, en San Francisco. hablando de lo que queremos hacer](https://www.youtube.com/watch?v=8QbKXPWpyKs)
+    1. [Otra charla, no se realmente si sera buena o no](http://www.nljug.org/jfall/session/how-to-use-docker-compose-and-gradle-to-continousl/171/)
+    1. [Este plugin de gradle parece ser lo que buscamos](https://github.com/palantir/gradle-docker)
+    1. [otro plugin de gradle ya hecho](https://github.com/avast/docker-compose-gradle-plugin)
+1. Crear el proyecto, el nodo y la tarea en el rundeck clusterizado
+1. ¿Cómo sabremos si este test es o no exitoso en una manera programatica?
 
