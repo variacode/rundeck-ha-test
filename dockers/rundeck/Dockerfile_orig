@@ -36,7 +36,7 @@ RUN adduser --shell /bin/bash --home $HOME --gecos "" --disabled-password $USERN
 
 #COPY rdpro-installer $HOME/rdpro-installer
 COPY rundeckpro-installer $HOME/rundeckpro-installer
-COPY install-and-run.sh $HOME/install-and-run.sh
+COPY scripts/install-and-run.sh $HOME/install-and-run.sh
 
 RUN chown -R $USERNAME:$USERNAME $HOME
 RUN chmod +x $HOME/install-and-run.sh
@@ -49,13 +49,8 @@ RUN sed -i.bak -e "s|securerandom.source=file:/dev/random|securerandom.source=fi
     mv -fv rdpro-installer $HOME/rdpro-installer && \
     rm -rf /tmp/it_* /tmp/rdpro* /tmp/RDECK*
 
-# Supervisor
-RUN apt-get -y install supervisor 
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
 # Set Run Context
 USER $USERNAME
 WORKDIR $HOME
 
 ENTRYPOINT $HOME/install-and-run.sh
-# CMD ["/usr/bin/supervisord"]

@@ -1,6 +1,3 @@
 [submodule "dockers/rundeck/rundeckpro-installer"]
 	path = dockers/rundeck/rundeckpro-installer
 	url = https://github.com/variacode/rundeckpro-installer/
-[submodule "dockers/rundeck/wait-for-it"]
-	path = dockers/rundeck/wait-for-it
-	url = https://github.com/vishnubob/wait-for-it

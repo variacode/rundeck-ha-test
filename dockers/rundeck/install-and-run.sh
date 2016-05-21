@@ -19,9 +19,12 @@ sudo chown -R rundeck:rundeck /logs
   --datasource-url 'jdbc:mysql://mysql/rundeck?autoReconnect=true' \
   --datasource-username rundeck \
   --datasource-password rundeck \
-  --server-hostname $RUNDECK_NODE \
   --server-name $RUNDECK_NODE \
-  --server-url "http://$RUNDECK_NODE:$PORT/rundeckpro-dr"
+  --server-url "http://loadbalancer:80/rundeckpro-dr"
+
+## --server-url "http://$RUNDECK_NODE:$PORT/rundeckpro-dr"
+### --server-url "https://$SERVER_VIP:4443/runseckpro"
+### --server-hostname "https://$SERVER_VIP:4443/runseckpro"
 
 # Enable clustermode
 ./rdpro-installer configure-clustermode \
@@ -35,3 +38,4 @@ sudo chown -R rundeck:rundeck /logs
 
 ./rdpro-installer start --rdeck-base $HOME \
   && tail -F $HOME/server/logs/catalina.out
+
