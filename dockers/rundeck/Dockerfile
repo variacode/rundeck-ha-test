@@ -1,5 +1,8 @@
 FROM ubuntu:16.04
 
+## http://stackoverflow.com/questions/20635472/using-the-run-instruction-in-a-dockerfile-with-source-does-not-work
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
 # (Optional) Change apt repository
 RUN sed -i.bak -e "s:archive.ubuntu.com:ftp.tecnoera.com:g" /etc/apt/sources.list
 
@@ -25,37 +28,79 @@ RUN \
   apt-get update && \
   apt-get install -y oracle-java8-installer
 
-## Set up env
+## DEBUG ENV VARS AT THIS POINT
+RUN echo "**** ENV VARS START ****" && printenv > /env_at_build_time && cat /env_at_build_time && echo "**** ENV VARS END ****"
+
+# SSH SERVER
+RUN apt-get install -yqq openssh-server
+RUN mkdir -p /var/run/sshd
+
+# SUPERVISOR
+RUN apt-get -yqq install supervisor 
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# NODE
+RUN echo "- installing node.js" &&  curl -sL https://deb.nodesource.com/setup_6.x && sudo apt-get install -y nodejs
+
+# NODERVISOR
+RUN echo "- installing nodervisor" && git clone https://github.com/TAKEALOT/nodervisor /home/nodervisor
+WORKDIR /home/nodervisor
+RUN npm install
+
+# RUNDECK
+
+## RUNDECK setup env
 ENV USERNAME=rundeck \
     HOME=/home/rundeck
 
-## Create rundeck user
+# RUNDECK - create user
 RUN adduser --shell /bin/bash --home $HOME --gecos "" --disabled-password $USERNAME && \
     passwd -d $USERNAME && \
     addgroup $USERNAME sudo
 
-#COPY rdpro-installer $HOME/rdpro-installer
 COPY rundeckpro-installer $HOME/rundeckpro-installer
 COPY install-and-run.sh $HOME/install-and-run.sh
 
 RUN chown -R $USERNAME:$USERNAME $HOME
 RUN chmod +x $HOME/install-and-run.sh
 
-#Build installer
+WORKDIR /home/rundeck
+USER rundeck
+
+# RUNDECK - building installer
 ENV LOGNAME=$USERNAME TERM=xterm-256color
 WORKDIR $HOME/rundeckpro-installer
 RUN sed -i.bak -e "s|securerandom.source=file:/dev/random|securerandom.source=file:/dev/urandom|" /usr/lib/jvm/java-8-oracle/jre/lib/security/java.security && \
     ./build.sh --notests --bundle && \
     mv -fv rdpro-installer $HOME/rdpro-installer && \
-    rm -rf /tmp/it_* /tmp/rdpro* /tmp/RDECK*
 
-# Supervisor
-RUN apt-get -y install supervisor 
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-# Set Run Context
-USER $USERNAME
+# RUNDECK - installation
 WORKDIR $HOME
 
-ENTRYPOINT $HOME/install-and-run.sh
+
+RUN ./rdpro-installer install-all \
+      --java-opts "-Djava.security.egd=file:/dev/./urandom" \
+      --http-port 4440 \
+      --https-port 4443 \
+      --keystore-generate true \
+      --keystore-file $HOME/etc/truststore \
+      --keystore-pass rundeck \
+      --keystore-dname 'CN=acme.org,OU=CA,O=ACME,L=Acme,S=Acme,C=US' \
+      --datasource-driver com.mysql.jdbc.Driver \
+      --datasource-url 'jdbc:mysql://mysql/rundeck?autoReconnect=true' \
+      --datasource-username rundeck \
+      --datasource-password rundeck \
+      --server-url "http://loadbalancer:80/rundeckpro-dr"
+
+USER root
+
+
+EXPOSE 22 3000 4440 4443
+
+# Set Run Context
+# USER $USERNAME
+# WORKDIR $HOME
+
+ENTRYPOINT ["/usr/bin/supervisord"]
+# ENTRYPOINT $HOME/install-and-run.sh
 # CMD ["/usr/bin/supervisord"]

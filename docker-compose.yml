@@ -25,12 +25,15 @@ services:
       - HTTP_PORT=4440
       - HTTPS_PORT=4443
       - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
+      - HOLA=DANIEL
     volumes:
       - logs:/logs
     networks:
       localnet:
         ipv4_address: 192.168.234.11
     ports:
+      - "2222:22"
+      - "3000:3000"
       - "4440:4440"
       - "4443:4443"
 
@@ -41,17 +44,20 @@ services:
       - mysql
     environment:
       - RUNDECK_NODE=rundeck2
-      - HTTP_PORT=4441
+      - HTTP_PORT=4440
       - HTTPS_PORT=4444
       - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
+      - HOLA=DANIEL2
     volumes:
       - logs:/logs
     networks:
       localnet:
         ipv4_address: 192.168.234.12
     ports:
+      - "2223:22"
+      - "3001:3000"
       - "4441:4441"
-      - "4444:4444"
+      - "4444:4443"
 
   loadbalancer:
     hostname: loadbalancer
