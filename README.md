@@ -21,7 +21,16 @@ add some mappings to your hosts file
 192.168.99.101 mysql
 ```
 
-offcourse, you should replace ´192.168.99.101´ for your docker's real address
+#### what is running on each service
+
+##### rundeck1
+
+a rundeck instance 
+
+##### mysql
+
+just a regular mysql database named rundeck, owned by user rundeck whom´s password is also rundeck, this datase is being used by both rundec instances
+
 
 #### PARA loguearse a una maquina (ejemplo a rundeck2)
 docker-compose exec --user rundeck rundeck2 bash -l

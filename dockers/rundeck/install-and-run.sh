@@ -23,14 +23,14 @@ echo "**** ENV VARS START ****" && printenv > env_at_run_time && cat env_at_run_
 ###   --server-url "http://loadbalancer:80/rundeckpro-dr"
  
 # Enable clustermode
-./rdpro-installer configure-clustermode \
-  --enabled true \
-  --rdeck-base $HOME
+### ./rdpro-installer configure-clustermode \
+###   --enabled true \
+###   --rdeck-base $HOME
 
 # agregar configure-uuid para las conf de HA
-./rdpro-installer configure-logs-dir \
-  --logs-dir /logs \
-  --rdeck-base $HOME
+### ./rdpro-installer configure-logs-dir \
+###   --logs-dir /logs \
+###   --rdeck-base $HOME
 
 ./rdpro-installer start --rdeck-base $HOME \
   && tail -F $HOME/server/logs/catalina.out

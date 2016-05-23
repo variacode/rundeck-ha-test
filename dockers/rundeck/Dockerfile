@@ -23,7 +23,7 @@ RUN apt-get -y update && \
 
 ## Install Oracle JVM
 RUN \
-  echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
+  echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections && \
   add-apt-repository -y ppa:webupd8team/java && \
   apt-get update && \
   apt-get install -y oracle-java8-installer
@@ -38,14 +38,6 @@ RUN mkdir -p /var/run/sshd
 # SUPERVISOR
 RUN apt-get -yqq install supervisor 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-# NODE
-RUN echo "- installing node.js" &&  curl -sL https://deb.nodesource.com/setup_6.x && sudo apt-get install -y nodejs
-
-# NODERVISOR
-RUN echo "- installing nodervisor" && git clone https://github.com/TAKEALOT/nodervisor /home/nodervisor
-WORKDIR /home/nodervisor
-RUN npm install
 
 # RUNDECK
 
@@ -64,19 +56,18 @@ COPY install-and-run.sh $HOME/install-and-run.sh
 RUN chown -R $USERNAME:$USERNAME $HOME
 RUN chmod +x $HOME/install-and-run.sh
 
-WORKDIR /home/rundeck
-USER rundeck
-
 # RUNDECK - building installer
 ENV LOGNAME=$USERNAME TERM=xterm-256color
 WORKDIR $HOME/rundeckpro-installer
 RUN sed -i.bak -e "s|securerandom.source=file:/dev/random|securerandom.source=file:/dev/urandom|" /usr/lib/jvm/java-8-oracle/jre/lib/security/java.security && \
     ./build.sh --notests --bundle && \
     mv -fv rdpro-installer $HOME/rdpro-installer && \
+    rm -rf /tmp/it_* /tmp/rdpro* /tmp/RDECK*
+
 
 # RUNDECK - installation
 WORKDIR $HOME
-
+USER rundeck
 
 RUN ./rdpro-installer install-all \
       --java-opts "-Djava.security.egd=file:/dev/./urandom" \
@@ -92,15 +83,15 @@ RUN ./rdpro-installer install-all \
       --datasource-password rundeck \
       --server-url "http://loadbalancer:80/rundeckpro-dr"
 
-USER root
+RUN ./rdpro-installer configure-clustermode \
+  --enabled true \
+  --rdeck-base $HOME
 
+RUN ./rdpro-installer configure-logs-dir \
+  --logs-dir /logs \
+  --rdeck-base $HOME
 
 EXPOSE 22 3000 4440 4443
 
-# Set Run Context
-# USER $USERNAME
-# WORKDIR $HOME
-
+USER root
 ENTRYPOINT ["/usr/bin/supervisord"]
-# ENTRYPOINT $HOME/install-and-run.sh
-# CMD ["/usr/bin/supervisord"]
