@@ -4,7 +4,7 @@ FROM ubuntu:16.04
 #RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 # (Temporary) Change apt repository
-RUN sed -i.bak -e "s:archive.ubuntu.com:ftp.tecnoera.com:g" /etc/apt/sources.list
+#RUN sed -i.bak -e "s:archive.ubuntu.com:ftp.tecnoera.com:g" /etc/apt/sources.list
 
 ## General package configuration
 RUN apt-get -y update && \
@@ -18,7 +18,8 @@ RUN apt-get -y update && \
         software-properties-common \
         debconf-utils \
         uuid-runtime \
-        ncurses-bin
+        ncurses-bin \
+        iputils-ping
 
 ## Install Oracle JVM
 RUN \
@@ -50,10 +51,7 @@ RUN adduser --shell /bin/bash --home $HOME --gecos "" --disabled-password $USERN
     addgroup $USERNAME sudo
 
 COPY rundeckpro-installer $HOME/rundeckpro-installer
-COPY scripts/run.sh $HOME/run.sh
-
 RUN chown -R $USERNAME:$USERNAME $HOME
-RUN chmod +x $HOME/run.sh
 
 # RUNDECK - building installer
 ENV LOGNAME=$USERNAME TERM=xterm-256color
@@ -70,8 +68,8 @@ RUN git clone https://github.com/rerun/rerun $HOME/rerun && \
     git clone https://github.com/rerun-modules/rundeck-system $HOME/rerun/modules/rundeck-system
 
 WORKDIR $HOME/rerun
-RUN ./rerun stubbs:archive -f $HOME/rundeck-apitokens -modules rundeck-apitokens && \
-    ./rerun stubbs:archive -f $HOME/rundeck-system -modules rundeck-system
+RUN ./rerun stubbs:archive -f $HOME/rrtokens --modules rundeck-apitokens && \
+    ./rerun stubbs:archive -f $HOME/rrsystem --modules rundeck-system
 
 # RUNDECK - installation
 WORKDIR $HOME
@@ -101,7 +99,12 @@ RUN ./rdpro-installer configure-logs-dir \
 
 EXPOSE 22 3000 4440 4443
 
+# Copy and run entry command.
+COPY scripts/run.sh $HOME/run.sh
+RUN sudo chown -R $USERNAME:$USERNAME $HOME && \
+    sudo chmod +x $HOME/run.sh
 
+# Start the instance.
 CMD ./run.sh
 #USER root
 #ENTRYPOINT ["/usr/bin/supervisord"]
