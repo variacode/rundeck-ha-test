@@ -63,6 +63,15 @@ RUN sed -i.bak -e "s|securerandom.source=file:/dev/random|securerandom.source=fi
     mv -fv rdpro-installer $HOME/rdpro-installer && \
     rm -rf /tmp/it_* /tmp/rdpro* /tmp/RDECK*
 
+# Build Rerun utilities
+WORKDIR $HOME
+RUN git clone https://github.com/rerun/rerun $HOME/rerun && \
+    git clone https://github.com/rerun-modules/rundeck-apitokens $HOME/rerun/modules/rundeck-apitokens && \
+    git clone https://github.com/rerun-modules/rundeck-system $HOME/rerun/modules/rundeck-system
+
+WORKDIR $HOME/rerun
+RUN ./rerun stubbs:archive -f $HOME/rundeck-apitokens -modules rundeck-apitokens && \
+    ./rerun stubbs:archive -f $HOME/rundeck-system -modules rundeck-system
 
 # RUNDECK - installation
 WORKDIR $HOME
