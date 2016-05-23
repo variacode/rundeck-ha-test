@@ -1,12 +1,10 @@
 FROM ubuntu:16.04
 
 # (Optional) Change apt repository
-RUN sed -i.bak -e "s:archive.ubuntu.com:ftp.tecnoera.com:g" /etc/apt/sources.list
+#RUN sed -i.bak -e "s:archive.ubuntu.com:ftp.tecnoera.com:g" /etc/apt/sources.list
 
 ## General package configuration
 RUN apt-get -y update && \
-    apt-get -y dist-upgrade && \
-    apt-get -y autoremove && \
     apt-get -y install \
         sudo \
         unzip \

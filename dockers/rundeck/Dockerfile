@@ -3,8 +3,8 @@ FROM ubuntu:16.04
 ## http://stackoverflow.com/questions/20635472/using-the-run-instruction-in-a-dockerfile-with-source-does-not-work
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
-# (Optional) Change apt repository
-RUN sed -i.bak -e "s:archive.ubuntu.com:ftp.tecnoera.com:g" /etc/apt/sources.list
+# (Temporary) Change apt repository
+# RUN sed -i.bak -e "s:archive.ubuntu.com:ftp.tecnoera.com:g" /etc/apt/sources.list
 
 ## General package configuration
 RUN apt-get -y update && \
@@ -18,8 +18,7 @@ RUN apt-get -y update && \
         software-properties-common \
         debconf-utils \
         uuid-runtime \
-        ncurses-bin && \
-    apt-get -y autoremove
+        ncurses-bin
 
 ## Install Oracle JVM
 RUN \
