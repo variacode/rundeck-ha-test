@@ -1,10 +1,10 @@
 FROM ubuntu:16.04
 
 ## http://stackoverflow.com/questions/20635472/using-the-run-instruction-in-a-dockerfile-with-source-does-not-work
-RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+#RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 # (Temporary) Change apt repository
-# RUN sed -i.bak -e "s:archive.ubuntu.com:ftp.tecnoera.com:g" /etc/apt/sources.list
+RUN sed -i.bak -e "s:archive.ubuntu.com:ftp.tecnoera.com:g" /etc/apt/sources.list
 
 ## General package configuration
 RUN apt-get -y update && \
@@ -28,15 +28,15 @@ RUN \
   apt-get install -y oracle-java8-installer
 
 ## DEBUG ENV VARS AT THIS POINT
-RUN echo "**** ENV VARS START ****" && printenv > /env_at_build_time && cat /env_at_build_time && echo "**** ENV VARS END ****"
+#RUN echo "**** ENV VARS START ****" && printenv > /env_at_build_time && cat /env_at_build_time && echo "**** ENV VARS END ****"
 
 # SSH SERVER
-RUN apt-get install -yqq openssh-server
-RUN mkdir -p /var/run/sshd
+#RUN apt-get install -yqq openssh-server
+#RUN mkdir -p /var/run/sshd
 
 # SUPERVISOR
-RUN apt-get -yqq install supervisor 
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+#RUN apt-get -yqq install supervisor
+#COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # RUNDECK
 
@@ -50,10 +50,10 @@ RUN adduser --shell /bin/bash --home $HOME --gecos "" --disabled-password $USERN
     addgroup $USERNAME sudo
 
 COPY rundeckpro-installer $HOME/rundeckpro-installer
-COPY install-and-run.sh $HOME/install-and-run.sh
+COPY scripts/run.sh $HOME/run.sh
 
 RUN chown -R $USERNAME:$USERNAME $HOME
-RUN chmod +x $HOME/install-and-run.sh
+RUN chmod +x $HOME/run.sh
 
 # RUNDECK - building installer
 ENV LOGNAME=$USERNAME TERM=xterm-256color
@@ -79,8 +79,8 @@ RUN ./rdpro-installer install-all \
       --datasource-driver com.mysql.jdbc.Driver \
       --datasource-url 'jdbc:mysql://mysql/rundeck?autoReconnect=true' \
       --datasource-username rundeck \
-      --datasource-password rundeck \
-      --server-url "http://loadbalancer:80/rundeckpro-dr"
+      --datasource-password rundeck
+      #--server-url "http://loadbalancer:80/rundeckpro-dr"
 
 RUN ./rdpro-installer configure-clustermode \
   --enabled true \
@@ -92,5 +92,7 @@ RUN ./rdpro-installer configure-logs-dir \
 
 EXPOSE 22 3000 4440 4443
 
-USER root
-ENTRYPOINT ["/usr/bin/supervisord"]
+
+CMD ./run.sh
+#USER root
+#ENTRYPOINT ["/usr/bin/supervisord"]

@@ -1,7 +1,6 @@
 version: '2'
 
 services:
-
   mysql:
     image: mysql:5.5
     ports:
@@ -22,12 +21,10 @@ services:
       - mysql
     environment:
       - RUNDECK_NODE=rundeck1
-      - HTTP_PORT=4440
-      - HTTPS_PORT=4443
+      - RUNDECK_URL="http://10.10.10.4:4443/rundeckpro-dr"
       - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
-      - HOLA=DANIEL
     volumes:
-      - ./dockers/rundeck/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+#      - ./dockers/rundeck/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
       - logs:/logs
     networks:
       localnet:
@@ -45,12 +42,11 @@ services:
       - mysql
     environment:
       - RUNDECK_NODE=rundeck2
-      - HTTP_PORT=4440
-      - HTTPS_PORT=4444
+      - RUNDECK_URL="http://10.10.10.4:4444/rundeckpro-dr"
       - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
-      - HOLA=DANIEL2
+      - RUNDECK_ROLE=passive
     volumes:
-      - ./dockers/rundeck/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+#      - ./dockers/rundeck/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
       - logs:/logs
     networks:
       localnet:
@@ -61,51 +57,49 @@ services:
       - "4441:4440"
       - "4444:4443"
 
-  cesi:
-    hostname: cesi
-    build: dockers/cesi/
-    volumes:
-      - ./dockers/cesi/cesi.conf:/etc/cesi.conf:ro
-    links:
-      - rundeck1
-      - rundeck2
-    networks:
-      localnet:
-        ipv4_address: 192.168.234.14
-    ports:
-      - "5000:5000"
+#  cesi:
+#    hostname: cesi
+#    build: dockers/cesi/
+#    volumes:
+#      - ./dockers/cesi/cesi.conf:/etc/cesi.conf:ro
+#    links:
+#      - rundeck1
+#      - rundeck2
+#    networks:
+#      localnet:
+#        ipv4_address: 192.168.234.14
+#    ports:
+#      - "5000:5000"
+#
+#  loadbalancer:
+#    hostname: loadbalancer
+#    image: nginx
+#    links:
+#      - rundeck1
+#      - rundeck2
+#      - cesi
+#    volumes:
+#      - ./dockers/loadbalancer/etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+#      - ./dockers/loadbalancer/etc/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
+#      - ./dockers/loadbalancer/usr/share/nginx/html/:/usr/share/nginx/html/:ro
+#      - logs:/logs
+#    networks:
+#      localnet:
+#        ipv4_address: 192.168.234.13
+#    ports:
+#      - "80:80"
+#    environment:
+#      - NGINX_HOST=loadbalancer
+#      - NGINX_PORT=80
 
-  loadbalancer:
-    hostname: loadbalancer
-    image: nginx
-    links:
-      - rundeck1
-      - rundeck2
-      - cesi
-    volumes:
-      - ./dockers/loadbalancer/etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./dockers/loadbalancer/etc/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./dockers/loadbalancer/usr/share/nginx/html/:/usr/share/nginx/html/:ro
-      - logs:/logs
-    networks:
-      localnet:
-        ipv4_address: 192.168.234.13
-    ports:
-      - "80:80"
+  testnode:
+    hostname: rundecktest
+    build: dockers/testnode/
     environment:
-      - NGINX_HOST=loadbalancer
-      - NGINX_PORT=80
-
-  # testnode:
-  #   hostname: rundecktest
-  #   build: dockers/testnode/
-  #   environment:
-  #     - RUNDECK_NODE=rundecktest
-  #   volumes:
-  #     - ./logs:/home/rundeck/var/logs/:rw
-  #   networks:
-  #     localnet:
-  #       ipv4_address: 192.168.234.2
+      - RUNDECK_NODE=rundecktest
+    networks:
+      localnet:
+        ipv4_address: 192.168.234.2
 
 networks:
   localnet:

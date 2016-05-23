@@ -1,0 +1,29 @@
+import java.util.jar.JarInputStream
+
+description = "HA tests for rundeckpro"
+
+
+configurations {
+}
+
+/** Main dependencies for all bundles */
+dependencies {
+}
+
+task build(type: Exec) {
+    workingDir '.'
+    commandLine 'docker-compose build'
+}
+
+
+task run(type: Exec, dependsOn: build) {
+    workingDir '.'
+    commandLine 'docker-compose up'
+}
+
+
+task test(type: Exec, dependsOn: run) {
+    workingDir '.'
+    commandLine 'scripts/run-test.sh'
+}
+

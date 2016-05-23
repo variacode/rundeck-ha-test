@@ -38,22 +38,16 @@ VOLUME $HOME/var/log
 
 #COPY rdpro-installer $HOME/rdpro-installer
 #COPY rundeckpro-installer $HOME/rundeckpro-installer
-COPY scripts/run-test.sh $HOME/run-test
+COPY scripts/run.sh $HOME/run.sh
 
 RUN chown -R $USERNAME:$USERNAME $HOME && \
-    chmod +x $HOME/run-test $HOME/
+    chmod +x $HOME/run.sh $HOME/
 
-#Build installer
-#ENV LOGNAME=$USERNAME TERM=xterm-256color
-#WORKDIR $HOME/rundeckpro-installer
-#RUN sed -i.bak -e "s|securerandom.source=file:/dev/random|securerandom.source=file:/dev/urandom|" /usr/lib/jvm/java-8-oracle/jre/lib/security/java.security && \
-#    ./build.sh --notests --bundle && \
-#    mv -fv rdpro-installer $HOME/rdpro-installer && \
-#    rm -rf /tmp/it_* /tmp/rdpro* /tmp/RDECK*
 
 # Set Run Context
 USER $USERNAME
 WORKDIR $HOME
 VOLUME $HOME
 
-CMD $HOME/run-test
+#CMD $HOME/run.sh
+CMD sudo tail -F /var/log/dmesg
