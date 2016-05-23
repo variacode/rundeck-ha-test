@@ -14,14 +14,14 @@ to start this network just hit ´docker-compose up´
 the introductory webpage is using aliased links that only make sense once in the docker-compose network, for that reason you'll need to 
 add some mappings to your hosts file
 
-´´´
+```
 192.168.99.101 rundeck1
 192.168.99.101 rundeck2
 192.168.99.101 loadbalancer
 192.168.99.101 mysql
-´´´
+```
 
-offcourse, you should replace ´192.168.99.101´ for your docker's real address
+offcourse, you should replace '192.168.99.101' for your docker's real address
 
 #### PARA loguearse a una maquina (ejemplo a rundeck2)
 docker-compose exec --user rundeck rundeck2 bash -l
