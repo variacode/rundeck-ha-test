@@ -1,14 +1,36 @@
 # rundeck-ha-test
 
-## after clonning
+#### This repo describes a docker compose network of services, in this network there are:
 
-- git submodule init
-- git submodule update
+- a mysql instance, under the alias "mysql" 
+- a rundeck instance, under the alias "rundeck1" 
+- a secondary rundeck instance, under the alias "rundeck2" 
+- a nginx instance, aliased "rundeck2" this nginx is load balancing both rundecks and providing a sort of introductory page [here](http://loadbalancer/)
 
-## to build rundeck image
+to start this network just hit ´docker-compose up´
 
-- docker build -t rdeck . 
-- docker run --rm -it rdeck bash
+#### please update your hosts file
+
+the introductory webpage is using aliased links that only make sense once in the docker-compose network, for that reason you'll need to 
+add some mappings to your hosts file
+
+```
+192.168.99.101 rundeck1
+192.168.99.101 rundeck2
+192.168.99.101 loadbalancer
+192.168.99.101 mysql
+```
+
+#### what is running on each service
+
+##### rundeck1
+
+a rundeck instance 
+
+##### mysql
+
+just a regular mysql database named rundeck, owned by user rundeck whom´s password is also rundeck, this datase is being used by both rundec instances
+
 
 #### PARA loguearse a una maquina (ejemplo a rundeck2)
 docker-compose exec --user rundeck rundeck2 bash -l
@@ -31,6 +53,7 @@ docker-compose exec --user rundeck rundeck2 bash -l
     1. [Using supervisord in Docker by Docker dudes](https://docs.docker.com/engine/admin/using_supervisord/)
     1. supervisord puede lanzar tu wea como servicio
     1. si instals esto con nodervisor vas a poder parar tambien los servicios!!
+    1. [Dockerfile supervisord](https://github.com/kdelfour/supervisor-docker/blob/master/Dockerfile)
 1. respecto de lanzar todo esto desde gradle
     1. [Un Hipster, probablemente, en San Francisco. hablando de lo que queremos hacer](https://www.youtube.com/watch?v=8QbKXPWpyKs)
     1. [Otra charla, no se realmente si sera buena o no](http://www.nljug.org/jfall/session/how-to-use-docker-compose-and-gradle-to-continousl/171/)
@@ -39,12 +62,10 @@ docker-compose exec --user rundeck rundeck2 bash -l
 1. Crear el proyecto, el nodo y la tarea en el rundeck clusterizado
 1. ¿Cómo sabremos si este test es o no exitoso en una manera programatica?
 
-
-
 la idea seria seguir este ejemplo https://github.com/ahonor/rundeck-vagrant/tree/master/primary-secondary-failover, hay que fijarse
 en el orden que impone este archivo https://github.com/ahonor/rundeck-vagrant/blob/master/primary-secondary-failover/Vagrantfile
 
-en este momento nosotros tenemos dos rundecks iguales hay que, igualar el comportamiento de https://github.com/ahonor/rundeck-vagrant/blob/master/primary-secondary-failover/add-primary.sh
-y los demas scripts!!
+en este momento nosotros tenemos dos rundecks iguales hay que, igualar el comportamiento de 
+https://github.com/ahonor/rundeck-vagrant/blob/master/primary-secondary-failover/add-primary.sh y los demas scripts!!
 
 si te fijas el add-primary deberia ejecutarse en el docker2 con el docker1 como argumento, esto quiere decir NECESITAMOS ssh
