@@ -1,6 +1,7 @@
 #!/bin/bash
 #
 # DR TESTS STAGE 2 - Tests after rundeck1 down.
+echo "Begin Test Stage 2"
 
 # Set exit on error
 set -e
@@ -15,21 +16,24 @@ RUNDECK2_PORT=4443
 
 sleep 3
 # Check Rundeck 1 Not Responging
-if curl -m10 -sSf http://$RUNDECK1_ADDR:$RUNDECK1_PORT
+echo -n "Check primary node is not responding... "
+if curl -m5 -sSfk https://$RUNDECK1_ADDR:$RUNDECK1_PORT/rundeckpro-dr
 then
-    echo "Primary still responging. test failed."
+    echo "Primary node still answering. test failed."
     exit 1;
 else
     echo "Primary rundeck down. :)"
 fi
 
 # Check Rundeck 2 Responding
-curl -sSfk -m5 https://$RUNDECK2_ADDR:$RUNDECK2_PORT/rundeckpro-dr > /dev/null
+echo -n "Check node 2 still answering... "
+curl -sSfk -m5 https://$RUNDECK2_ADDR:$RUNDECK2_PORT/rundeckpro-dr
+echo "OK"
 
 # Check Rundeck 2 Working.
-
+#TODO
 
 
 # Release Resources.
-echo "Test Step 1 OK"
+echo "Stage 2 Tests OK..."
 exit 0

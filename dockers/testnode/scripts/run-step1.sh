@@ -1,6 +1,7 @@
 #!/bin/bash
 #
 # DR TESTS STAGE 2 - Tests before rundeck1 down.
+echo "Begin Test Stage 1"
 
 # Wait for node 1 and 2 ready.
 MAX_ATTEMPTS=20
@@ -22,7 +23,7 @@ do
     }
     sleep $SLEEP; # wait before trying again.
 done
-echo "Rundeck Nodes READY. Beginning tests..."
+echo -e "\n\nRundeck Nodes READY. Beginning tests..."
 
 #BEGIN TEST
 
@@ -45,13 +46,14 @@ ping -c3 $RUNDECK2_ADDR
 
 
 # Check Rundeck answering in both machines
-echo "Check rundecks answering"
-curl -sSfk -m5 https://$RUNDECK1_ADDR:$RUNDECK1_PORT/rundeckpro-dr > /dev/null
-curl -sSfk -m5 https://$RUNDECK2_ADDR:$RUNDECK2_PORT/rundeckpro-dr > /dev/null
+echo -n "Check rundecks answering... "
+curl -sSfk -m5 https://$RUNDECK1_ADDR:$RUNDECK1_PORT/rundeckpro-dr
+curl -sSfk -m5 https://$RUNDECK2_ADDR:$RUNDECK2_PORT/rundeckpro-dr
+echo "OK"
 
 # Check Rundeck 1 Working.
-
+# TODO
 
 # Release Resources.
-echo "Tests OK"
+echo "Stage 1 Tests OK..."
 exit 0

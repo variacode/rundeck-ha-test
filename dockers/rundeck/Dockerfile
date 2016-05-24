@@ -103,6 +103,8 @@ EXPOSE 22 3000 4440 4443
 COPY scripts/run.sh $HOME/run.sh
 RUN sudo chmod +x $HOME/run.sh
 
+VOLUME $HOME
+
 # Start the instance.
 CMD ./run.sh
 
