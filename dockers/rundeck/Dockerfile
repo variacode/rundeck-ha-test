@@ -94,17 +94,17 @@ RUN ./rdpro-installer configure-clustermode \
   --rdeck-base $HOME
 
 RUN ./rdpro-installer configure-logs-dir \
-  --logs-dir /logs \
+  --logs-dir $HOME/logs \
   --rdeck-base $HOME
 
 EXPOSE 22 3000 4440 4443
 
 # Copy and run entry command.
 COPY scripts/run.sh $HOME/run.sh
-RUN sudo chown -R $USERNAME:$USERNAME $HOME && \
-    sudo chmod +x $HOME/run.sh
+RUN sudo chmod +x $HOME/run.sh
 
 # Start the instance.
 CMD ./run.sh
+
 #USER root
 #ENTRYPOINT ["/usr/bin/supervisord"]

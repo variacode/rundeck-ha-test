@@ -1,5 +1,12 @@
 #!/bin/bash
 
+#Fix folder permissions
+sudo chown -R $USERNAME:$USERNAME $HOME;
+
+# Some Cleanup
+rm -rfv $HOME/server/logs/*
+rm -fv $HOME/testdata/$RUNDECK_NODE.ready
+
 # Configure general stuff.
 ./rdpro-installer configure-server-hostname --server-hostname $RUNDECK_NODE --rdeck-base $HOME
 ./rdpro-installer configure-server-name --rdeck-base $HOME --server-name $RUNDECK_NODE
@@ -20,7 +27,6 @@ fi
 
 # PARTY HARD
 ./rdpro-installer start --rdeck-base $HOME
-
 
 # Wait for server to start
 LOGFILE=$HOME/server/logs/catalina.out
@@ -65,7 +71,7 @@ fi
 
 ### Signal READY
 # here we should leave some file in a shared folder to signal that the server is ready. so tests can begin.
-# touch some/dir/$RUNDECK_NODE.ready
+touch $HOME/testdata/$RUNDECK_NODE.ready
 
 # Keep alive
 tail -F $HOME/server/logs/catalina.out

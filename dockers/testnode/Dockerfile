@@ -8,7 +8,8 @@ RUN apt-get -y update && \
     apt-get -y install \
         sudo \
         unzip \
-        curl
+        curl \
+        iputils-ping
 #        xmlstarlet \
 #        git \
 #        netcat-traditional \
@@ -38,10 +39,10 @@ VOLUME $HOME/var/log
 
 #COPY rdpro-installer $HOME/rdpro-installer
 #COPY rundeckpro-installer $HOME/rundeckpro-installer
-COPY scripts/run.sh $HOME/run.sh
+COPY scripts/* $HOME/
 
 RUN chown -R $USERNAME:$USERNAME $HOME && \
-    chmod +x $HOME/run.sh $HOME/
+    chmod +x $HOME/*.sh $HOME/
 
 
 # Set Run Context
@@ -50,4 +51,5 @@ WORKDIR $HOME
 VOLUME $HOME
 
 #CMD $HOME/run.sh
-CMD sudo tail -F /var/log/dmesg
+CMD sudo chown -R $USERNAME:$USERNAME $HOME && \
+    sudo tail -F /var/log/dmesg

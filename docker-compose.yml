@@ -25,7 +25,8 @@ services:
       - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
     volumes:
 #      - ./dockers/rundeck/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
-      - logs:/logs
+      - logs:/home/rundeck/logs:rw
+      - testdata:/home/rundeck/testdata:rw
     networks:
       localnet:
         ipv4_address: 192.168.234.11
@@ -46,7 +47,8 @@ services:
       - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
     volumes:
 #      - ./dockers/rundeck/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
-      - logs:/logs
+      - logs:/home/rundeck/logs:rw
+      - testdata:/home/rundeck/testdata:rw
     networks:
       localnet:
         ipv4_address: 192.168.234.12
@@ -94,8 +96,14 @@ services:
   testnode:
     hostname: rundecktest
     build: dockers/testnode/
+    links:
+      - mysql
+      - rundeck1
+      - rundeck2
     environment:
       - RUNDECK_NODE=rundecktest
+    volumes:
+      - testdata:/home/rundeck/testdata:rw
     networks:
       localnet:
         ipv4_address: 192.168.234.2
@@ -111,3 +119,4 @@ networks:
 
 volumes:
   logs:
+  testdata:
