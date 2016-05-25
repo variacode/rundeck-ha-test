@@ -1,0 +1,5 @@
+<result error='true' apiversion='17'>
+  <error code='api.error.item.alreadyexists'>
+    <message>project already exists: daplay</message>
+  </error>
+</result>
