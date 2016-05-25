@@ -1,28 +1,29 @@
 version: '2'
 
 services:
-  mysql:
-    image: mysql:5.5
-    ports:
-      - "3306:3306"
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=rundeck
-      - MYSQL_USER=rundeck
-      - MYSQL_PASSWORD=rundeck
-    networks:
-      localnet:
-        ipv4_address: 192.168.234.10
+#  mysql:
+#    image: mysql:5.5
+#    ports:
+#      - "3306:3306"
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=root
+#      - MYSQL_DATABASE=rundeck
+#      - MYSQL_USER=rundeck
+#      - MYSQL_PASSWORD=rundeck
+#    networks:
+#      localnet:
+#        ipv4_address: 192.168.234.10
 
   rundeck1:
     hostname: rundeck1
     build: dockers/rundeck/
-    links:
-      - mysql
+#    links:
+#      - mysql
     environment:
       - RUNDECK_NODE=rundeck1
       - RUNDECK_ROLE=active
-      - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
+      - RUNDECK_URL=http://10.10.10.4:4440/rundeckpro-dr
+#      - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
     volumes:
 #      - ./dockers/rundeck/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
       - logs:/home/rundeck/logs:rw
@@ -39,12 +40,13 @@ services:
   rundeck2:
     hostname: rundeck2
     build: dockers/rundeck/
-    links:
-      - mysql
+#    links:
+#      - mysql
     environment:
       - RUNDECK_NODE=rundeck2
       - RUNDECK_ROLE=passive
-      - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
+      - RUNDECK_URL=http://10.10.10.4:4441/rundeckpro-dr
+#      - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
     volumes:
 #      - ./dockers/rundeck/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
       - logs:/home/rundeck/logs:rw
@@ -97,7 +99,7 @@ services:
     hostname: rundecktest
     build: dockers/testnode/
     links:
-      - mysql
+#      - mysql
       - rundeck1
       - rundeck2
     environment:

@@ -12,18 +12,21 @@ dependencies {
 
 task build(type: Exec) {
     workingDir '.'
-    commandLine 'docker-compose build'
+    commandLine 'docker-compose'
+    args 'build'
 }
 
 
 task run(type: Exec, dependsOn: build) {
     workingDir '.'
-    commandLine 'docker-compose up'
+    commandLine '/usr/local/bin/docker-compose up'
 }
 
 
-task test(type: Exec, dependsOn: run) {
-    workingDir '.'
-    commandLine 'scripts/run-test.sh'
+task test(type: Test) << {
+    exec {
+        workingDir '.'
+        commandLine 'scripts/run-test.sh'
+    }
 }
 

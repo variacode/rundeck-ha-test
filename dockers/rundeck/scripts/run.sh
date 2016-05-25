@@ -10,19 +10,23 @@ rm -fv $HOME/testdata/$RUNDECK_NODE.ready
 # Configure general stuff.
 ./rdpro-installer configure-server-hostname --server-hostname $RUNDECK_NODE --rdeck-base $HOME
 ./rdpro-installer configure-server-name --rdeck-base $HOME --server-name $RUNDECK_NODE
-./rdpro-installer configure-server-url --server-url "" --rdeck-base $HOME
-#./rdpro-installer configure-server-url --server-url $RUNDECK_URL --rdeck-base $HOME
+./rdpro-installer configure-server-url --server-url $RUNDECK_URL --rdeck-base $HOME
+
+# open permissions via api
+rm -f $HOME/etc/apitoken.aclpolicy
+cp $HOME/etc/admin.aclpolicy $HOME/etc/apitoken.aclpolicy
+sed -i -e "s:admin:api_token_group:" $HOME/etc/apitoken.aclpolicy
 
 
 # Configure passive mode if applies.
 if [[ X$RUNDECK_ROLE == 'Xpassive' ]] ;
 then
+    # Here all instructions to run in the passive pre-start
     echo "This is the passive instance. Configuring passive Node";
     ./rdpro-installer configure-execution-mode --rdeck-base $HOME --execution-mode passive;
-    # Here all instructions to run in the passive pre-start
 else
-    echo "This is the active Instance";
     # Here all instructions to run in the active pre-start
+    echo "This is the active Instance";
 fi
 
 # PARTY HARD
@@ -52,6 +56,9 @@ echo "RUNDECK NODE $RUNDECK_NODE started successfully!!"
 
 
 ### POST CONFIG
+# Request apitoken for servers
+TOKEN_R1=$($HOME/rrtokens rundeck-apitokens:create --token-user admin --url http://rundeck1:4440/rundeckpro-dr --username admin --password admin)
+TOKEN_R2=$($HOME/rrtokens rundeck-apitokens:create --token-user admin --url http://rundeck2:4440/rundeckpro-dr --username admin --password admin)
 
 # Create Replication Jobs and API Tokens.
 if [[ X$RUNDECK_ROLE == 'Xpassive' ]] ;
@@ -59,12 +66,78 @@ then
     echo "Post configuring passive instance";
     # Here all instructions to run in the passive post-start
 
+    #Create project
+    curl -H "X-Rundeck-Auth-Token: $TOKEN_R2" -H "Accept: application/json" -H "Content-Type: application/json" -d '{
+      "name": "testproject",
+      "description": "",
+      "config": {
+        "resources.source.1.config.file": "/home/rundeck/projects/testproject/etc/resources.xml",
+        "resources.source.1.config.format": "resourcexml",
+        "project.nodeCache.delay": "30",
+        "service.FileCopier.default.provider": "stub",
+        "service.NodeExecutor.default.provider": "stub",
+        "resources.source.1.config.includeServerNode": "true",
+        "project.nodeCache.enabled": "true",
+        "resources.source.1.config.requireFileExists": "false",
+        "project.name": "testproject",
+        "resources.source.1.config.generateFileAutomatically": "true",
+        "resources.source.1.type": "file"
+      }
+    }' http://rundeck2:4440/rundeckpro-dr/api/11/projects
+
+#    #Create project
+#    curl -H "X-Rundeck-Auth-Token: $TOKEN_R1" -H "Accept: application/json" -H "Content-Type: application/json" -d '{
+#      "url": "http://10.10.10.4:4440/rundeckpro-dr/api/17/project/testproject",
+#      "name": "testproject",
+#      "description": "",
+#      "config": {
+#        "resources.source.1.config.file": "/home/rundeck/projects/testproject/etc/resources.xml",
+#        "resources.source.1.config.format": "resourcexml",
+#        "project.nodeCache.delay": "30",
+#        "service.FileCopier.default.provider": "stub",
+#        "service.NodeExecutor.default.provider": "stub",
+#        "resources.source.1.config.includeServerNode": "true",
+#        "project.nodeCache.enabled": "true",
+#        "resources.source.1.config.requireFileExists": "false",
+#        "project.name": "testproject",
+#        "resources.source.1.config.generateFileAutomatically": "true",
+#        "resources.source.1.type": "file"
+#      }
+#    }' http://rundeck1:4440/rundeckpro-dr/api/11/projects
+
 else
     echo "Post configuring active instance";
     # Here all instructions to run in the active post-start
 
-    # Request apitoken from server 2 (use rrtokens)
+    #Create project
+    curl -H "X-Rundeck-Auth-Token: $TOKEN_R1" -H "Accept: application/json" -H "Content-Type: application/json" -d '{
+      "name": "testproject",
+      "description": "",
+      "config": {
+        "resources.source.1.config.file": "/home/rundeck/projects/testproject/etc/resources.xml",
+        "resources.source.1.config.format": "resourcexml",
+        "project.nodeCache.delay": "30",
+        "service.FileCopier.default.provider": "stub",
+        "service.NodeExecutor.default.provider": "stub",
+        "resources.source.1.config.includeServerNode": "true",
+        "project.nodeCache.enabled": "true",
+        "resources.source.1.config.requireFileExists": "false",
+        "project.name": "testproject",
+        "resources.source.1.config.generateFileAutomatically": "true",
+        "resources.source.1.type": "file"
+      }
+    }' http://rundeck1:4440/rundeckpro-dr/api/11/projects
+
+
     # Configure JobReplication Plugin
+    curl -H "X-Rundeck-Auth-Token: $TOKEN_R1" -H "Accept: application/json" -H "Content-Type: application/json" -d '{
+      "config": {
+        "apiToken": "$TOKEN_R2",
+        "url": "http://rundeck2:4440/rundeckpro-dr,
+        "project": "${job.project}"
+      }
+    }' http://rundeck1:4440/rundeckpro-dr/api/17/project/testproject/scm/export/plugin/rundeckpro-job-replication-export/setup
+
     # Configure Execution Replication Plugin
 
 fi
@@ -74,4 +147,5 @@ fi
 touch $HOME/testdata/$RUNDECK_NODE.ready
 
 # Keep alive
-tail -F $HOME/server/logs/catalina.out
+tail -F $HOME/server/logs/catalina.out  $HOME/var/logs/rundeck.api.log $HOME/var/logs/rundeck.executions.log $HOME/var/logs/rundeck.jobs.log $HOME/var/logs/rundeck.log $HOME/var/logs/rundeck.options.log $HOME/var/logs/rundeck.storage.log
+

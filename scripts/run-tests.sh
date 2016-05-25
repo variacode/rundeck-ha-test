@@ -14,6 +14,11 @@ echo "Killing primary node..."
 docker-compose kill rundeck1
 sleep 3;
 
+# Trigger active mode on passive node.
+echo "Setting node2 to active mode."
+docker-compose exec --user rundeck rundeck2 ./rrsystem rundeck-system:set-execution-mode --execution-mode active --url https://rundeck2:4443/rundeckpro-dr --username admin --password admin
+sleep 3;
+
 #Run stage 2
 docker-compose exec --user rundeck testnode ./run-step2.sh
 sleep 3;
