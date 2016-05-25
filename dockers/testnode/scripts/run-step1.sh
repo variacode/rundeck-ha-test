@@ -52,7 +52,9 @@ curl -sSfk -m5 https://$RUNDECK2_ADDR:$RUNDECK2_PORT/rundeckpro-dr
 echo "OK"
 
 # Check Rundeck 1 Working.
-# TODO
+# TODO Check that the test job created on node 1 is working correctly
+# TODO Check that the test job created on node 2 is NOT working
+
 
 # Release Resources.
 echo "Stage 1 Tests OK..."

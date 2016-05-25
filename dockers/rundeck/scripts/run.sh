@@ -24,9 +24,11 @@ then
     # Here all instructions to run in the passive pre-start
     echo "This is the passive instance. Configuring passive Node";
     ./rdpro-installer configure-execution-mode --rdeck-base $HOME --execution-mode passive;
+
 else
     # Here all instructions to run in the active pre-start
     echo "This is the active Instance";
+
 fi
 
 # PARTY HARD
@@ -85,26 +87,6 @@ then
       }
     }' http://rundeck2:4440/rundeckpro-dr/api/11/projects
 
-#    #Create project
-#    curl -H "X-Rundeck-Auth-Token: $TOKEN_R1" -H "Accept: application/json" -H "Content-Type: application/json" -d '{
-#      "url": "http://10.10.10.4:4440/rundeckpro-dr/api/17/project/testproject",
-#      "name": "testproject",
-#      "description": "",
-#      "config": {
-#        "resources.source.1.config.file": "/home/rundeck/projects/testproject/etc/resources.xml",
-#        "resources.source.1.config.format": "resourcexml",
-#        "project.nodeCache.delay": "30",
-#        "service.FileCopier.default.provider": "stub",
-#        "service.NodeExecutor.default.provider": "stub",
-#        "resources.source.1.config.includeServerNode": "true",
-#        "project.nodeCache.enabled": "true",
-#        "resources.source.1.config.requireFileExists": "false",
-#        "project.name": "testproject",
-#        "resources.source.1.config.generateFileAutomatically": "true",
-#        "resources.source.1.type": "file"
-#      }
-#    }' http://rundeck1:4440/rundeckpro-dr/api/11/projects
-
 else
     echo "Post configuring active instance";
     # Here all instructions to run in the active post-start
@@ -132,13 +114,15 @@ else
     # Configure JobReplication Plugin
     curl -H "X-Rundeck-Auth-Token: $TOKEN_R1" -H "Accept: application/json" -H "Content-Type: application/json" -d '{
       "config": {
-        "apiToken": "$TOKEN_R2",
-        "url": "http://rundeck2:4440/rundeckpro-dr,
+        "apiToken": "'"$TOKEN_R2"'",
+        "url": "http://rundeck2:4440/rundeckpro-dr",
         "project": "${job.project}"
       }
     }' http://rundeck1:4440/rundeckpro-dr/api/17/project/testproject/scm/export/plugin/rundeckpro-job-replication-export/setup
 
-    # Configure Execution Replication Plugin
+    # TODO Configure Execution Replication Plugin (logstore-replication plugin)
+
+    # TODO Create a test job which creates some file on a shared storage or do something stupid and easily detectable.($HOME/testdata)
 
 fi
 
