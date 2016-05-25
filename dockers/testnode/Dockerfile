@@ -9,8 +9,8 @@ RUN apt-get -y update && \
         sudo \
         unzip \
         curl \
-        iputils-ping
-#        xmlstarlet \
+        iputils-ping \
+        xmlstarlet
 #        git \
 #        netcat-traditional \
 #        software-properties-common \

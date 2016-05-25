@@ -72,26 +72,26 @@ services:
 #    ports:
 #      - "5000:5000"
 #
-#  loadbalancer:
-#    hostname: loadbalancer
-#    image: nginx
-#    links:
-#      - rundeck1
-#      - rundeck2
-#      - cesi
-#    volumes:
-#      - ./dockers/loadbalancer/etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-#      - ./dockers/loadbalancer/etc/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
-#      - ./dockers/loadbalancer/usr/share/nginx/html/:/usr/share/nginx/html/:ro
-#      - logs:/logs
-#    networks:
-#      localnet:
-#        ipv4_address: 192.168.234.13
-#    ports:
-#      - "80:80"
-#    environment:
-#      - NGINX_HOST=loadbalancer
-#      - NGINX_PORT=80
+  loadbalancer:
+    hostname: loadbalancer
+    image: nginx
+    links:
+      - rundeck1
+      - rundeck2
+      # - cesi
+    volumes:
+      - ./dockers/loadbalancer/etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./dockers/loadbalancer/etc/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./dockers/loadbalancer/usr/share/nginx/html/:/usr/share/nginx/html/:ro
+      - logs:/logs
+    networks:
+      localnet:
+        ipv4_address: 192.168.234.13
+    ports:
+      - "80:80"
+    environment:
+      - NGINX_HOST=loadbalancer
+      - NGINX_PORT=80
 
   testnode:
     hostname: rundecktest
@@ -103,6 +103,7 @@ services:
     environment:
       - RUNDECK_NODE=rundecktest
     volumes:
+      - ./dockers/testnode/scripts:/home/rundeck/scripts:rw
       - testdata:/home/rundeck/testdata:rw
     networks:
       localnet:

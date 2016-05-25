@@ -86,8 +86,8 @@ RUN ./rdpro-installer install-all \
       --datasource-driver com.mysql.jdbc.Driver \
       --datasource-url 'jdbc:mysql://mysql/rundeck?autoReconnect=true' \
       --datasource-username rundeck \
-      --datasource-password rundeck
-      #--server-url "http://loadbalancer:80/rundeckpro-dr"
+      --datasource-password rundeck \
+      --server-url "http://loadbalancer:80/rundeckpro-dr"
 
 RUN ./rdpro-installer configure-clustermode \
   --enabled true \
