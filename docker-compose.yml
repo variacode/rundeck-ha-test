@@ -22,7 +22,7 @@ services:
     environment:
       - RUNDECK_NODE=rundeck1
       - RUNDECK_ROLE=active
-      - RUNDECK_URL=http://10.10.10.4:4440/rundeckpro-dr
+      - RUNDECK_URL=http://rundeck1:4440/rundeckpro-dr
 #      - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
     volumes:
 #      - ./dockers/rundeck/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
@@ -45,7 +45,7 @@ services:
     environment:
       - RUNDECK_NODE=rundeck2
       - RUNDECK_ROLE=passive
-      - RUNDECK_URL=http://10.10.10.4:4441/rundeckpro-dr
+      - RUNDECK_URL=http://rundeck2:4440/rundeckpro-dr
 #      - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
     volumes:
 #      - ./dockers/rundeck/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#exit on error
+set -e
+
 #Fix folder permissions
 sudo chown -R $USERNAME:$USERNAME $HOME;
 
