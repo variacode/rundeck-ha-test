@@ -82,13 +82,12 @@ RUN ./rdpro-installer install-all \
       --keystore-generate true \
       --keystore-file $HOME/etc/truststore \
       --keystore-pass rundeck \
-      --keystore-dname 'CN=acme.org,OU=CA,O=ACME,L=Acme,S=Acme,C=US'
-
-#      --datasource-driver com.mysql.jdbc.Driver \
-#      --datasource-url 'jdbc:mysql://mysql/rundeck?autoReconnect=true' \
-#      --datasource-username rundeck \
-#      --datasource-password rundeck
-#      --server-url "http://loadbalancer:80/rundeckpro-dr"
+      --keystore-dname 'CN=acme.org,OU=CA,O=ACME,L=Acme,S=Acme,C=US' \
+      --datasource-driver com.mysql.jdbc.Driver \
+      --datasource-url 'jdbc:mysql://mysql/rundeck?autoReconnect=true' \
+      --datasource-username rundeck \
+      --datasource-password rundeck \
+      --server-url "http://loadbalancer:80/rundeckpro-dr"
 
 RUN ./rdpro-installer configure-clustermode \
   --enabled true \

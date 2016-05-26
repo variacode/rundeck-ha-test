@@ -1,0 +1,23 @@
+<joblist>
+    <job>
+        <description></description>
+        <executionEnabled>true</executionEnabled>
+        <id>32fdf559-65fe-4c51-abe0-4c3d1b51d610</id>
+        <loglevel>INFO</loglevel>
+        <name>create a file repeatedly</name>
+        <schedule>
+            <month month='*' />
+            <time hour='*' minute='*' seconds='0/15' />
+            <weekday day='*' />
+            <year year='*' />
+        </schedule>
+        <scheduleEnabled>true</scheduleEnabled>
+        <sequence keepgoing='true' strategy='node-first'>
+            <command>
+                <description>creates a file in the shared directory every 15 seconds</description>
+                <exec>touch /home/rundeck/testdata/created_by_$(hostname)_at_$(date +%s)</exec>
+            </command>
+        </sequence>
+        <uuid>32fdf559-65fe-4c51-abe0-4c3d1b51d610</uuid>
+    </job>
+</joblist>
