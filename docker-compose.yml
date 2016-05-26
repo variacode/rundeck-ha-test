@@ -1,31 +1,33 @@
 version: '2'
 
 services:
-#  mysql:
-#    image: mysql:5.5
-#    ports:
-#      - "3306:3306"
-#    environment:
-#      - MYSQL_ROOT_PASSWORD=root
-#      - MYSQL_DATABASE=rundeck
-#      - MYSQL_USER=rundeck
-#      - MYSQL_PASSWORD=rundeck
-#    networks:
-#      localnet:
-#        ipv4_address: 192.168.234.10
+  mysql:
+    image: mysql:5.5
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=rundeck
+      - MYSQL_USER=rundeck
+      - MYSQL_PASSWORD=rundeck
+    networks:
+      localnet:
+        ipv4_address: 192.168.234.10
 
   rundeck1:
     hostname: rundeck1
     build: dockers/rundeck/
-#    links:
-#      - mysql
+    links:
+      - mysql
+    entrypoint: bash /home/rundeck/run.sh
     environment:
       - RUNDECK_NODE=rundeck1
       - RUNDECK_ROLE=active
-      - RUNDECK_URL=http://rundeck1:4440/rundeckpro-dr
-#      - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
+      - RUNDECK_URL=http://loadbalancer:80/rundeckpro-dr
+      - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
     volumes:
 #      - ./dockers/rundeck/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+      - ./dockers/rundeck/scripts/run.sh:/home/rundeck/run.sh
       - logs:/home/rundeck/logs:rw
       - testdata:/home/rundeck/testdata:rw
     networks:
@@ -40,15 +42,17 @@ services:
   rundeck2:
     hostname: rundeck2
     build: dockers/rundeck/
-#    links:
-#      - mysql
+    links:
+      - mysql
+    entrypoint: bash /home/rundeck/run.sh
     environment:
       - RUNDECK_NODE=rundeck2
       - RUNDECK_ROLE=passive
-      - RUNDECK_URL=http://rundeck2:4440/rundeckpro-dr
-#      - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
+      - RUNDECK_URL=http://loadbalancer:80/rundeckpro-dr
+      - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
     volumes:
 #      - ./dockers/rundeck/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+      - ./dockers/rundeck/scripts/run.sh:/home/rundeck/run.sh
       - logs:/home/rundeck/logs:rw
       - testdata:/home/rundeck/testdata:rw
     networks:
@@ -60,20 +64,6 @@ services:
       - "4441:4440"
       - "4444:4443"
 
-#  cesi:
-#    hostname: cesi
-#    build: dockers/cesi/
-#    volumes:
-#      - ./dockers/cesi/cesi.conf:/etc/cesi.conf:ro
-#    links:
-#      - rundeck1
-#      - rundeck2
-#    networks:
-#      localnet:
-#        ipv4_address: 192.168.234.14
-#    ports:
-#      - "5000:5000"
-#
   loadbalancer:
     hostname: loadbalancer
     image: nginx
@@ -99,7 +89,7 @@ services:
     hostname: rundecktest
     build: dockers/testnode/
     links:
-#      - mysql
+      - mysql
       - rundeck1
       - rundeck2
     environment:
@@ -123,3 +113,18 @@ networks:
 volumes:
   logs:
   testdata:
+
+#  cesi:
+#    hostname: cesi
+#    build: dockers/cesi/
+#    volumes:
+#      - ./dockers/cesi/cesi.conf:/etc/cesi.conf:ro
+#    links:
+#      - rundeck1
+#      - rundeck2
+#    networks:
+#      localnet:
+#        ipv4_address: 192.168.234.14
+#    ports:
+#      - "5000:5000"
+#

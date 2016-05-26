@@ -71,7 +71,11 @@ then
     echo "Post configuring passive instance";
     # Here all instructions to run in the passive post-start
 
-    #Create project
+    # delete and create project
+    curl -H "X-Rundeck-Auth-Token: $TOKEN_R2" \
+        -H "Accept: application/json" \
+        -X DELETE http://rundeck2:4440/rundeckpro-dr/api/11/project/testproject
+    echo "creating project"
     curl -H "X-Rundeck-Auth-Token: $TOKEN_R2" -H "Accept: application/json" -H "Content-Type: application/json" -d '{
       "name": "testproject",
       "description": "",
@@ -95,6 +99,10 @@ else
     # Here all instructions to run in the active post-start
 
     #Create project
+    curl -H "X-Rundeck-Auth-Token: $TOKEN_R1" \
+        -H "Accept: application/json" \
+        -X DELETE http://rundeck1:4440/rundeckpro-dr/api/11/project/testproject
+    echo "creating project"
     curl -H "X-Rundeck-Auth-Token: $TOKEN_R1" -H "Accept: application/json" -H "Content-Type: application/json" -d '{
       "name": "testproject",
       "description": "",
@@ -134,5 +142,11 @@ fi
 touch $HOME/testdata/$RUNDECK_NODE.ready
 
 # Keep alive
-tail -F $HOME/server/logs/catalina.out  $HOME/var/logs/rundeck.api.log $HOME/var/logs/rundeck.executions.log $HOME/var/logs/rundeck.jobs.log $HOME/var/logs/rundeck.log $HOME/var/logs/rundeck.options.log $HOME/var/logs/rundeck.storage.log
+tail -F $HOME/server/logs/catalina.out \
+ $HOME/var/logs/rundeck.api.log \
+ $HOME/var/logs/rundeck.executions.log \
+ $HOME/var/logs/rundeck.jobs.log \
+ $HOME/var/logs/rundeck.log \
+ $HOME/var/logs/rundeck.options.log \
+ $HOME/var/logs/rundeck.storage.log
 

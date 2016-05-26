@@ -3,6 +3,9 @@
 # DR TESTS STAGE 2 - Tests before rundeck1 down.
 echo "Begin Test Stage 1"
 
+DIR=$(cd `dirname $0` && pwd)
+source $DIR/include.sh
+
 # Wait for node 1 and 2 ready.
 MAX_ATTEMPTS=20
 SLEEP=10
@@ -10,7 +13,7 @@ echo "Waiting for nodes to start"
 declare -i count=0
 while (( count <= MAX_ATTEMPTS ))
 do
-    if [[ -f testdata/rundeck1.ready && -f testdata/rundeck2.ready ]]
+    if [[ -f $HOME/testdata/rundeck1.ready && -f $HOME/testdata/rundeck2.ready ]]
     then
         break;
     else
@@ -50,6 +53,15 @@ echo -n "Check rundecks answering... "
 curl -sSfk -m5 https://$RUNDECK1_ADDR:$RUNDECK1_PORT/rundeckpro-dr
 curl -sSfk -m5 https://$RUNDECK2_ADDR:$RUNDECK2_PORT/rundeckpro-dr
 echo "OK"
+
+# clears previous test data and imports default job
+clean
+
+login
+import_job_to_project
+
+echo "sleeping 50 seconds so we get some files to write"
+sleep 50
 
 # Check Rundeck 1 Working.
 # TODO Check that the test job created on node 1 is working correctly

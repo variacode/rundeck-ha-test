@@ -6,7 +6,7 @@ set -e
 echo "Beginning tests"
 
 #Run stage 1
-docker-compose exec --user rundeck testnode ./run-step1.sh
+docker-compose exec --user rundeck testnode ./scripts/run-step1.sh
 sleep 3;
 
 # Kill main rundeck instance.
@@ -20,7 +20,7 @@ docker-compose exec --user rundeck rundeck2 ./rrsystem rundeck-system:set-execut
 sleep 3;
 
 #Run stage 2
-docker-compose exec --user rundeck testnode ./run-step2.sh
+docker-compose exec --user rundeck testnode ./scripts/run-step2.sh
 sleep 3;
 
 
