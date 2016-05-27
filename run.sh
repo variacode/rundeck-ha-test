@@ -10,7 +10,7 @@ TS=`date +%Y%m%d-%H%M%S`
 set -ex
 
 # tickle installer for it to rebuild
-touch dockers/rundeck/rundeckpro-installer/build_control
+date > dockers/rundeck/rundeckpro-installer/build_control
 
 # clean up docker env
 docker-compose down --volumes --remove-orphans
