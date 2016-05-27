@@ -1,2 +1,0 @@
-//NOTE: to enable a plugin project, add it to the include list like this:
-//include 'webapp','plugins:test-plugin'
