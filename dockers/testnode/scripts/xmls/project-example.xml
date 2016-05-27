@@ -1,7 +1,0 @@
-<project>
-    <name>NAME</name>
-    <description>DESCRIPTION</description>
-    <config>
-        <property key="test.property" value="test value"/>
-    </config>
-</project>

@@ -8,7 +8,7 @@ sudo chown -R $USERNAME:$USERNAME $HOME;
 
 # Some Cleanup
 rm -rfv $HOME/server/logs/*
-rm -fv $HOME/testdata/$RUNDECK_NODE.ready
+rm -fv $HOME/testdata/*
 
 # Configure general stuff.
 ./rdpro-installer configure-server-hostname --server-hostname $RUNDECK_NODE --rdeck-base $HOME
@@ -42,12 +42,12 @@ LOGFILE=$HOME/server/logs/catalina.out
 SUCCESS_MSG="INFO: Server startup in"
 MAX_ATTEMPTS=18
 SLEEP=10
-echo "waiting for $RUNDECK_NODE to start"
+echo "Waiting for $RUNDECK_NODE to start. This will take about 2 minutes... "
 declare -i count=0
 while (( count <= MAX_ATTEMPTS ))
 do
     if ! grep "${SUCCESS_MSG}" "$LOGFILE"
-    then  echo -n "."; # output a progress character.
+    then  echo "Still working. hang on..."; # output a progress character.
     else  break; # found successful startup message.
     fi
     (( count += 1 ))  ; # increment attempts counter.
@@ -56,11 +56,13 @@ do
         exit 1
     }
     sleep $SLEEP; # wait before trying again.
+
 done
 echo "RUNDECK NODE $RUNDECK_NODE started successfully!!"
 
 
 ### POST CONFIG
+
 # Request apitoken for servers
 TOKEN_R1=$($HOME/rrtokens rundeck-apitokens:create --token-user admin --url http://rundeck1:4440/rundeckpro-dr --username admin --password admin)
 TOKEN_R2=$($HOME/rrtokens rundeck-apitokens:create --token-user admin --url http://rundeck2:4440/rundeckpro-dr --username admin --password admin)
@@ -72,11 +74,13 @@ then
     # Here all instructions to run in the passive post-start
 
     # delete and create project
-    curl -H "X-Rundeck-Auth-Token: $TOKEN_R2" \
+    curl -sS -H "X-Rundeck-Auth-Token: $TOKEN_R2" \
         -H "Accept: application/json" \
-        -X DELETE http://rundeck2:4440/rundeckpro-dr/api/11/project/testproject
-    echo "creating project"
-    curl -H "X-Rundeck-Auth-Token: $TOKEN_R2" -H "Accept: application/json" -H "Content-Type: application/json" -d '{
+        -X DELETE http://rundeck2:4440/rundeckpro-dr/api/11/project/testproject \
+        || true
+
+    echo "Creating project"
+    curl -sSf -H "X-Rundeck-Auth-Token: $TOKEN_R2" -H "Accept: application/json" -H "Content-Type: application/json" -d '{
       "name": "testproject",
       "description": "",
       "config": {
@@ -99,11 +103,13 @@ else
     # Here all instructions to run in the active post-start
 
     #Create project
-    curl -H "X-Rundeck-Auth-Token: $TOKEN_R1" \
+    curl -sS -H "X-Rundeck-Auth-Token: $TOKEN_R1" \
         -H "Accept: application/json" \
-        -X DELETE http://rundeck1:4440/rundeckpro-dr/api/11/project/testproject
-    echo "creating project"
-    curl -H "X-Rundeck-Auth-Token: $TOKEN_R1" -H "Accept: application/json" -H "Content-Type: application/json" -d '{
+        -X DELETE http://rundeck1:4440/rundeckpro-dr/api/11/project/testproject \
+        || true
+
+    echo "Creating project"
+    curl -sSf -H "X-Rundeck-Auth-Token: $TOKEN_R1" -H "Accept: application/json" -H "Content-Type: application/json" -d '{
       "name": "testproject",
       "description": "",
       "config": {
@@ -123,7 +129,8 @@ else
 
 
     # Configure JobReplication Plugin
-    curl -H "X-Rundeck-Auth-Token: $TOKEN_R1" -H "Accept: application/json" -H "Content-Type: application/json" -d '{
+    echo "Configuring job replication for testproject."
+    curl -sSf -H "X-Rundeck-Auth-Token: $TOKEN_R1" -H "Accept: application/json" -H "Content-Type: application/json" -d '{
       "config": {
         "apiToken": "'"$TOKEN_R2"'",
         "url": "http://rundeck2:4440/rundeckpro-dr",
@@ -133,7 +140,10 @@ else
 
     # TODO Configure Execution Replication Plugin (logstore-replication plugin)
 
-    # TODO Create a test job which creates some file on a shared storage or do something stupid and easily detectable.($HOME/testdata)
+    #Create a test job which creates some file on a shared storage or do something stupid and easily detectable.($HOME/testdata)
+    sleep 5
+    echo "Creating test job"
+    curl -sSf -H "X-Rundeck-Auth-Token: $TOKEN_R1" -F xmlBatch=@$HOME/xmls/job.xml http://rundeck1:4440/rundeckpro-dr/api/17/jobs/import?project=testproject
 
 fi
 
