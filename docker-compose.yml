@@ -52,7 +52,6 @@ services:
 #      - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
     volumes:
 #      - ./dockers/rundeck/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
-      - ./dockers/rundeck/scripts/run.sh:/home/rundeck/run.sh
       - logs:/home/rundeck/logs:rw
       - testdata:/home/rundeck/testdata:rw
     networks:
@@ -95,7 +94,6 @@ services:
     environment:
       - RUNDECK_NODE=rundecktest
     volumes:
-      - ./dockers/testnode/scripts:/home/rundeck/scripts:rw
       - testdata:/home/rundeck/testdata:rw
     networks:
       localnet:

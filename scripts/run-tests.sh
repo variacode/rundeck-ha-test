@@ -20,7 +20,7 @@ docker-compose exec --user rundeck rundeck2 ./rrsystem rundeck-system:set-execut
 sleep 3;
 
 #Run stage 2
-docker-compose exec --user rundeck testnode ./scripts/run-step2.sh
+docker-compose exec --user rundeck testnode ./run-step2.sh
 sleep 3;
 
 
