@@ -4,7 +4,7 @@
         <executionEnabled>true</executionEnabled>
         <id>32fdf559-65fe-4c51-abe0-4c3d1b51d610</id>
         <loglevel>INFO</loglevel>
-        <name>create a file repeatedly</name>
+        <name>Create File each N seconds.</name>
         <schedule>
             <month month='*' />
             <time hour='*' minute='*' seconds='0/15' />
