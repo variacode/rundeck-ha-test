@@ -34,13 +34,20 @@ sleep 60
 #delete_job
 
 # Check Rundeck 2 Working.
-# TODO Check that the test job created on node 1 is NOT working
-echo "RUNDECK 1: $(find . -mmin -0.5 -regex '.*rundeck1_[0-9].+' | wc -l) files."
+# Check that the test job created on node 1 is NOT working
+echo -n "Check Node 1 not working... "
+test 0 -eq $(find . -mmin -0.5 -regex '.*rundeck1_[0-9].+' | wc -l)
+echo "OK"
 
-# TODO Check that the test job created on node 2 is working correctly
-echo "RUNDECK 2: $(find . -mmin -0.5 -regex '.*rundeck2_[0-9].+' | wc -l) files."
+# Check that the test job created on node 2 is working correctly
+echo -n "Check Node 2 working... "
+test 0 -lt $(find . -mmin -0.5 -regex '.*rundeck2_[0-9].+' | wc -l)
+echo "OK"
 
 
 # Release Resources.
 echo "Stage 2 Tests OK..."
+
+#cleanup
+#rm -fv $HOME/testdata/* || true
 exit 0

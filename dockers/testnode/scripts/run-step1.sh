@@ -38,12 +38,12 @@ set -e
 # Check  Pings
 echo "Check server pings"
 #ping -c3 $TESTNODE_IP
-ping -c3 rundeck1
-ping -c3 rundeck2
+ping -qc3 rundeck1
+ping -qc3 rundeck2
 
 
 # Check Rundeck answering in both machines
-echo -n "Check rundecks answering... "
+echo -en "\nCheck rundecks answering... "
 curl -sSfk -m5 http://rundeck1:4440/rundeckpro-dr
 curl -sSfk -m5 http://rundeck2:4440/rundeckpro-dr
 echo "OK"
@@ -52,11 +52,15 @@ echo "sleeping a minute so we get some files to write"
 sleep 60
 
 # Check Rundeck 1 Working.
-# TODO Check that the test job created on node 1 is working correctly
-echo "RUNDECK 1: $(find . -mmin -0.5 -regex '.*rundeck1_[0-9].+' | wc -l) files."
+# Check that the test job created on node 1 is working correctly
+echo -n "Check Node 1 working... "
+test 0 -lt $(find . -mmin -0.5 -regex '.*rundeck1_[0-9].+' | wc -l)
+echo "OK"
 
-# TODO Check that the test job created on node 2 is NOT working
-echo "RUNDECK 2: $(find . -mmin -0.5 -regex '.*rundeck2_[0-9].+' | wc -l) files."
+#Check that the test job created on node 2 is NOT working
+echo -n "Check Node 2 not working... "
+test 0 -eq $(find . -mmin -0.5 -regex '.*rundeck2_[0-9].+' | wc -l)
+echo "OK"
 
 # Release Resources.
 echo "Stage 1 Tests OK..."
