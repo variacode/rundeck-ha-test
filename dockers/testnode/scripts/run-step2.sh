@@ -26,7 +26,7 @@ echo -n "Check node 2 still answering... "
 curl -sSfk -m5 http://rundeck2:4440/rundeckpro-dr
 echo "OK"
 
-echo "sleeping 50 seconds for rundeck2 to write some files"
+echo "sleeping a minute for rundeck2 to write some files..."
 sleep 60
 
 #login
