@@ -13,7 +13,7 @@ set -e
 sleep 3
 # Check Rundeck 1 Not Responging
 echo -n "Check primary node is not responding... "
-if curl -m3 -sSfk http://rundeck1:4440/rundeckpro-dr
+if curl -m5 -sSfk http://rundeck1:4440/rundeckpro-dr
 then
     echo "Primary node still answering. test failed."
     exit 1;
