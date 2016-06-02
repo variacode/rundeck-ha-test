@@ -7,7 +7,7 @@ echo "Begin Test Stage 1"
 #source $DIR/include.sh
 
 # Wait for node 1 and 2 ready.
-MAX_ATTEMPTS=20
+MAX_ATTEMPTS=30
 SLEEP=10
 echo "Waiting for nodes to start"
 declare -i count=0

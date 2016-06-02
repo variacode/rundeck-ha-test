@@ -40,7 +40,7 @@ fi
 # Wait for server to start
 LOGFILE=$HOME/server/logs/catalina.out
 SUCCESS_MSG="INFO: Server startup in"
-MAX_ATTEMPTS=18
+MAX_ATTEMPTS=30
 SLEEP=10
 echo "Waiting for $RUNDECK_NODE to start. This will take about 2 minutes... "
 declare -i count=0
