@@ -1,8 +1,5 @@
 FROM ubuntu:16.04
 
-## http://stackoverflow.com/questions/20635472/using-the-run-instruction-in-a-dockerfile-with-source-does-not-work
-#RUN rm /bin/sh && ln -s /bin/bash /bin/sh
-
 # (Temporary) Change apt repository
 #RUN sed -i.bak -e "s:archive.ubuntu.com:ftp.tecnoera.com:g" /etc/apt/sources.list
 
@@ -31,14 +28,6 @@ RUN \
 ## DEBUG ENV VARS AT THIS POINT
 #RUN echo "**** ENV VARS START ****" && printenv > /env_at_build_time && cat /env_at_build_time && echo "**** ENV VARS END ****"
 
-# SSH SERVER
-#RUN apt-get install -yqq openssh-server
-#RUN mkdir -p /var/run/sshd
-
-# SUPERVISOR
-#RUN apt-get -yqq install supervisor
-#COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
 # RUNDECK
 
 ## RUNDECK setup env
@@ -57,6 +46,7 @@ RUN chown -R $USERNAME:$USERNAME $HOME
 ENV LOGNAME=$USERNAME TERM=xterm-256color
 WORKDIR $HOME/rundeckpro-installer
 RUN sed -i.bak -e "s|securerandom.source=file:/dev/random|securerandom.source=file:/dev/urandom|" /usr/lib/jvm/java-8-oracle/jre/lib/security/java.security && \
+    sed -i.bak -e "s|^RUNDECK_APPNAME=.*|RUNDECK_APPNAME=rundeckpro-dr|" metadata && \
     ./build.sh --notests --bundle && \
     mv -fv rdpro-installer $HOME/rdpro-installer && \
     rm -rf /tmp/it_* /tmp/rdpro* /tmp/RDECK*
@@ -109,5 +99,3 @@ VOLUME $HOME
 # Start the instance.
 CMD ./run.sh
 
-#USER root
-#ENTRYPOINT ["/usr/bin/supervisord"]
