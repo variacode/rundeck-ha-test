@@ -1,9 +1,10 @@
 #!/bin/bash
-
-#exit on error
-set -e
-
 #### DR TEST CONFIGURATION.
+
+# Request apitoken for servers
+TOKEN_R1=$($HOME/rrtokens rundeck-apitokens:create --token-user admin --url http://rundeck1:4440/$RUNDECK_ROOT --username admin --password admin)
+TOKEN_R2=$($HOME/rrtokens rundeck-apitokens:create --token-user admin --url http://rundeck2:4440/$RUNDECK_ROOT --username admin --password admin)
+
 
 # Create Replication Jobs and API Tokens.
 if [[ X$RUNDECK_ROLE == 'Xpassive' ]] ;
@@ -14,7 +15,7 @@ then
     # delete and create project
     curl -sS -H "X-Rundeck-Auth-Token: $TOKEN_R2" \
         -H "Accept: application/json" \
-        -X DELETE http://rundeck2:4440/rundeckpro-dr/api/11/project/testproject \
+        -X DELETE http://rundeck2:4440/$RUNDECK_ROOT/api/11/project/testproject \
         || true
 
     echo "Creating project"
@@ -34,7 +35,7 @@ then
         "resources.source.1.config.generateFileAutomatically": "true",
         "resources.source.1.type": "file"
       }
-    }' http://rundeck2:4440/rundeckpro-dr/api/11/projects
+    }' http://rundeck2:4440/$RUNDECK_ROOT/api/11/projects
 
 else
     echo "Post configuring active instance";
@@ -43,7 +44,7 @@ else
     #Create project
     curl -sS -H "X-Rundeck-Auth-Token: $TOKEN_R1" \
         -H "Accept: application/json" \
-        -X DELETE http://rundeck1:4440/rundeckpro-dr/api/11/project/testproject \
+        -X DELETE http://rundeck1:4440/$RUNDECK_ROOT/api/11/project/testproject \
         || true
 
     echo "Creating project"
@@ -63,7 +64,7 @@ else
         "resources.source.1.config.generateFileAutomatically": "true",
         "resources.source.1.type": "file"
       }
-    }' http://rundeck1:4440/rundeckpro-dr/api/11/projects
+    }' http://rundeck1:4440/$RUNDECK_ROOT/api/11/projects
 
 
     # Configure JobReplication Plugin
@@ -71,22 +72,19 @@ else
     curl -sSf -H "X-Rundeck-Auth-Token: $TOKEN_R1" -H "Accept: application/json" -H "Content-Type: application/json" -d '{
       "config": {
         "apiToken": "'"$TOKEN_R2"'",
-        "url": "http://rundeck2:4440/rundeckpro-dr",
+        "url": "http://rundeck2:4440/'$RUNDECK_ROOT'",
         "project": "${job.project}"
       }
-    }' http://rundeck1:4440/rundeckpro-dr/api/17/project/testproject/scm/export/plugin/rundeckpro-job-replication-export/setup
+    }' http://rundeck1:4440/$RUNDECK_ROOT/api/17/project/testproject/scm/export/plugin/rundeckpro-job-replication-export/setup
 
     # TODO Configure Execution Replication Plugin (logstore-replication plugin)
 
     #Create a test job which creates some file on a shared storage or do something stupid and easily detectable.($HOME/testdata)
     sleep 5
     echo "Creating test job"
-    curl -sSf -H "X-Rundeck-Auth-Token: $TOKEN_R1" -F xmlBatch=@$HOME/config/test-dr/job.xml http://rundeck1:4440/rundeckpro-dr/api/17/jobs/import?project=testproject
+    curl -sSf -H "X-Rundeck-Auth-Token: $TOKEN_R1" -F xmlBatch=@$HOME/config/test-dr/job.xml http://rundeck1:4440/$RUNDECK_ROOT/api/17/jobs/import?project=testproject
 
 fi
-
-
-### END DR TEST CONFIG.
 
 
 ### Signal READY
@@ -94,7 +92,8 @@ fi
 touch $HOME/testdata/$RUNDECK_NODE.ready
 
 # Keep alive
-tail -F $HOME/server/logs/catalina.out \
+tail -F -n100 \
+ $HOME/server/logs/catalina.out \
  $HOME/var/logs/rundeck.api.log \
  $HOME/var/logs/rundeck.executions.log \
  $HOME/var/logs/rundeck.jobs.log \

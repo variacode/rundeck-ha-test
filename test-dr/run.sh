@@ -17,8 +17,8 @@ docker-compose -f $DOCKER_COMPOSE_SPEC down --volumes --remove-orphans
 docker-compose -f $DOCKER_COMPOSE_SPEC build
 
 # run docker
-docker-compose -f $DOCKER_COMPOSE_SPEC up
-#docker-compose -f $DOCKER_COMPOSE_SPEC up -d
+#docker-compose -f $DOCKER_COMPOSE_SPEC up
+docker-compose -f $DOCKER_COMPOSE_SPEC up -d
 
 # Wait a little to start tests
 sleep 5

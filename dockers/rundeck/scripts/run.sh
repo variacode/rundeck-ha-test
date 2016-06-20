@@ -75,7 +75,7 @@ export TOKEN_R2=$($HOME/rrtokens rundeck-apitokens:create --token-user admin --u
 #### DR TEST CONFIGURATION.
 
 ## TODO SCAR
-exit 1
+#exit 1
 
 
 # Create Replication Jobs and API Tokens.
@@ -164,7 +164,8 @@ fi
 touch $HOME/testdata/$RUNDECK_NODE.ready
 
 # Keep alive
-tail -F $HOME/server/logs/catalina.out \
+tail -F -n100 \
+ $HOME/server/logs/catalina.out \
  $HOME/var/logs/rundeck.api.log \
  $HOME/var/logs/rundeck.executions.log \
  $HOME/var/logs/rundeck.jobs.log \

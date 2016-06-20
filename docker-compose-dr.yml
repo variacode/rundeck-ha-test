@@ -24,6 +24,7 @@ services:
 #      - mysql
 #    entrypoint: bash /home/rundeck/run.sh
     environment:
+      - TEST_CONFIG_SCRIPT=scripts/test-dr/config-test.sh
       - RUNDECK_NODE=rundeck1
       - RUNDECK_ROLE=active
       - RUNDECK_URL=http://rundeck1:4440/${RUNDECK_BUNDLE}
@@ -53,6 +54,7 @@ services:
 #      - mysql
 #    entrypoint: bash /home/rundeck/run.sh
     environment:
+      - TEST_CONFIG_SCRIPT=scripts/test-dr/config-test.sh
       - RUNDECK_NODE=rundeck2
       - RUNDECK_ROLE=passive
       - RUNDECK_URL=http://rundeck2:4440/${RUNDECK_BUNDLE}
