@@ -2,7 +2,7 @@
 
 #
 # DR TESTS STAGE 2 - Tests after rundeck1 down.
-echo "Begin Test Stage 2"
+echo "Begin DR Test Step 2 (after fail)"
 
 #DIR=$(cd `dirname $0` && pwd)
 #source $DIR/include.sh
@@ -13,7 +13,7 @@ set -e
 sleep 3
 # Check Rundeck 1 Not Responging
 echo -n "Check primary node is not responding... "
-if curl -m5 -sSfk http://rundeck1:4440/rundeckpro-dr
+if curl -m5 -sSfk http://rundeck1:4440/$RUNDECK_ROOT
 then
     echo "Primary node still answering. test failed."
     exit 1;
@@ -23,7 +23,7 @@ fi
 
 # Check Rundeck 2 Responding
 echo -n "Check node 2 still answering... "
-curl -sSfk -m5 http://rundeck2:4440/rundeckpro-dr
+curl -sSfk -m5 http://rundeck2:4440/$RUNDECK_ROOT
 echo "OK"
 
 echo "sleeping a minute for rundeck2 to write some files..."
@@ -46,7 +46,7 @@ echo "OK"
 
 
 # Release Resources.
-echo "Stage 2 Tests OK..."
+echo "DR Tests Step 2 OK..."
 
 #cleanup
 #rm -fv $HOME/testdata/* || true

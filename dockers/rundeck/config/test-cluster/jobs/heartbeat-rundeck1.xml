@@ -1,0 +1,39 @@
+<joblist>
+  <job>
+    <context>
+      <options preserveOrder='true'>
+        <option name='apikey' value='%%APIKEY%%' />
+        <option name='server_uuid' value='01010101-0000-0000-0000-111111111111' />
+        <option name='url' value='%%RUNDECK_URL%%' />
+      </options>
+    </context>
+    <description></description>
+    <executionEnabled>true</executionEnabled>
+    <group>cluster/01010101-0000-0000-0000-111111111111</group>
+    <id>4e853f19-d225-491b-b1d7-61b2bf993e48</id>
+    <loglevel>INFO</loglevel>
+    <name>heartbeat</name>
+    <schedule>
+      <month month='*' />
+      <time hour='*' minute='*' seconds='0/15' />
+      <weekday day='*' />
+      <year year='*' />
+    </schedule>
+    <scheduleEnabled>true</scheduleEnabled>
+    <sequence keepgoing='false' strategy='node-first'>
+      <command>
+        <description>get the instance system info</description>
+        <node-step-plugin type='rundeck-system:info'>
+          <configuration>
+            <entry key='apikey' value='${option.apikey}' />
+            <entry key='file' value='/home/rundeck/resources/heartbeat/${option.server_uuid}.xml' />
+            <entry key='format' value='resourcexml' />
+            <entry key='pretty-print' value='true' />
+            <entry key='url' value='${option.url}' />
+          </configuration>
+        </node-step-plugin>
+      </command>
+    </sequence>
+    <uuid>4e853f19-d225-491b-b1d7-61b2bf993e48</uuid>
+  </job>
+</joblist>

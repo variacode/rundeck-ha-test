@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<project>
+  <node name="01010101-0000-0000-0000-111111111111" hostname="rundeck1" username="rundeck">
+  </node>
+</project>
