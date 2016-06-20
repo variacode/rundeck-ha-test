@@ -10,6 +10,11 @@ set -ex
 date > dockers/rundeck/rundeckpro-installer/build_control
 
 # RUN DR TEST
-. test-dr/run.sh
+#test-dr/run.sh
+
+#Run Cluster Test
+test-cluster/run.sh
+
+
 
 

@@ -1,0 +1,32 @@
+<joblist>
+  <job>
+    <context>
+      <options preserveOrder='true'>
+        <option name='apikey' value='DcrVKxL5tE7LvHAM20s5oiqSiO9ssoZh' />
+        <option name='jobUUID' />
+        <option name='project' value='PRO_HA' />
+        <option name='url' value='http://192.168.0.21:8080/rundeckpro' />
+      </options>
+    </context>
+    <description></description>
+    <executionEnabled>true</executionEnabled>
+    <group>cluster/c867465d-d54c-46f4-8890-47aa551e967b</group>
+    <id>27be836d-d77f-45c8-bb38-738b137bd623</id>
+    <loglevel>INFO</loglevel>
+    <name>set-owner-job</name>
+    <scheduleEnabled>true</scheduleEnabled>
+    <sequence keepgoing='false' strategy='node-first'>
+      <command>
+        <step-plugin type='rundeck-project:job-set-schedule-owner'>
+          <configuration>
+            <entry key='apikey' value='${option.apikey}' />
+            <entry key='job' value='${option.jobUUID}' />
+            <entry key='project' value='${option.project}' />
+            <entry key='url' value='${option.url}' />
+          </configuration>
+        </step-plugin>
+      </command>
+    </sequence>
+    <uuid>27be836d-d77f-45c8-bb38-738b137bd623</uuid>
+  </job>
+</joblist>

@@ -16,7 +16,8 @@ RUN apt-get -y update && \
         debconf-utils \
         uuid-runtime \
         ncurses-bin \
-        iputils-ping
+        iputils-ping \
+        zip
 
 ## Install Oracle JVM
 RUN \
@@ -34,6 +35,7 @@ RUN \
 ARG RUNDECK_BUNDLE=rundeckpro
 
 ENV USERNAME=rundeck \
+    USER=rundeck \
     HOME=/home/rundeck \
     LOGNAME=$USERNAME \
     TERM=xterm-256color
@@ -43,24 +45,20 @@ RUN adduser --shell /bin/bash --home $HOME --gecos "" --disabled-password $USERN
     passwd -d $USERNAME && \
     addgroup $USERNAME sudo
 
-COPY rundeckpro-installer $HOME/rundeckpro-installer
-RUN chown -R $USERNAME:$USERNAME $HOME
-
-RUN echo "############################### "$RUNDECK_BUNDLE
-RUN env
-
 # Build Rerun utilities
 WORKDIR $HOME
 RUN git clone https://github.com/rerun/rerun $HOME/rerun && \
     git clone https://github.com/rerun-modules/rundeck-apitokens $HOME/rerun/modules/rundeck-apitokens && \
-    git clone https://github.com/rerun-modules/rundeck-system $HOME/rerun/modules/rundeck-system
+    git clone https://github.com/rerun-modules/rundeck-system $HOME/rerun/modules/rundeck-system && \
+    git clone https://github.com/rerun-modules/rundeck-plugin $HOME/rerun/modules/rundeck-plugin
 
 WORKDIR $HOME/rerun
 RUN ./rerun stubbs:archive -f $HOME/rrtokens --modules rundeck-apitokens && \
     ./rerun stubbs:archive -f $HOME/rrsystem --modules rundeck-system
 
-
 # RUNDECK - building installer
+COPY rundeckpro-installer $HOME/rundeckpro-installer
+
 # TODO set version as parameter
 WORKDIR $HOME/rundeckpro-installer
 RUN sed -i.bak -e "s|securerandom.source=file:/dev/random|securerandom.source=file:/dev/urandom|" /usr/lib/jvm/java-8-oracle/jre/lib/security/java.security && \
@@ -70,6 +68,7 @@ RUN sed -i.bak -e "s|securerandom.source=file:/dev/random|securerandom.source=fi
     rm -rf /tmp/it_* /tmp/rdpro* /tmp/RDECK*
 
 # RUNDECK - install
+RUN chown -R $USERNAME:$USERNAME $HOME
 WORKDIR $HOME
 USER rundeck
 
@@ -81,11 +80,6 @@ RUN ./rdpro-installer install-all \
       --keystore-file $HOME/etc/truststore \
       --keystore-pass rundeck \
       --keystore-dname 'CN=acme.org,OU=CA,O=ACME,L=Acme,S=Acme,C=US' \
-#      --datasource-driver com.mysql.jdbc.Driver \
-#      --datasource-url 'jdbc:mysql://mysql/rundeck?autoReconnect=true' \
-#      --datasource-username rundeck \
-#      --datasource-password rundeck
-
 
 RUN ./rdpro-installer configure-clustermode \
   --enabled true \

@@ -1,33 +1,38 @@
 version: '2'
 
 services:
-#  mysql:
-#    image: mysql:5.5
-#    ports:
-#      - "3306:3306"
-#    environment:
-#      - MYSQL_ROOT_PASSWORD=root
-#      - MYSQL_DATABASE=rundeck
-#      - MYSQL_USER=rundeck
-#      - MYSQL_PASSWORD=rundeck
-#    networks:
-#      localnet:
-#        ipv4_address: 192.168.234.10
+  mysql:
+    image: mysql:5.5
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=rundeck
+      - MYSQL_USER=rundeck
+      - MYSQL_PASSWORD=rundeck
+    networks:
+      localnet:
+        ipv4_address: 192.168.234.10
 
   rundeck1:
     hostname: rundeck1
-    build: dockers/rundeck/
-#    links:
-#      - mysql
-    entrypoint: bash /home/rundeck/run.sh
+    build:
+      context: dockers/rundeck/
+      args:
+        RUNDECK_BUNDLE: ${RUNDECK_BUNDLE}
+    links:
+      - mysql
+#    entrypoint: bash /home/rundeck/run.sh
     environment:
       - RUNDECK_NODE=rundeck1
       - RUNDECK_ROLE=active
-      - RUNDECK_URL=http://rundeck1:4440/rundeckpro-dr
+      - RUNDECK_URL=http://rundeck1:4440/${RUNDECK_BUNDLE}
+      - RUNDECK_ROOT=${RUNDECK_BUNDLE}
+      - RUNDECK_UUID=11111111-0000-0000-0000-111111111111
+      - CONFIG_SCRIPT_PRESTART=scripts/test-cluster/config-test-pre.sh
+#      - CONFIG_SCRIPT_POSTSTART=scripts/test-cluster/config-test-post.sh
 #      - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
     volumes:
-#      - ./dockers/rundeck/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
-      - ./dockers/rundeck/scripts/run.sh:/home/rundeck/run.sh
       - logs:/home/rundeck/logs:rw
       - testdata:/home/rundeck/testdata:rw
     networks:
@@ -41,17 +46,23 @@ services:
 
   rundeck2:
     hostname: rundeck2
-    build: dockers/rundeck/
-#    links:
-#      - mysql
-    entrypoint: bash /home/rundeck/run.sh
+    build:
+      context: dockers/rundeck/
+      args:
+        RUNDECK_BUNDLE: ${RUNDECK_BUNDLE}
+    links:
+      - mysql
     environment:
       - RUNDECK_NODE=rundeck2
       - RUNDECK_ROLE=passive
-      - RUNDECK_URL=http://rundeck2:4440/rundeckpro-dr
+      - RUNDECK_URL=http://rundeck2:4441/${RUNDECK_BUNDLE}
+#      - RUNDECK_URL=http://rundeck2:4440/${RUNDECK_BUNDLE}
+      - RUNDECK_ROOT=${RUNDECK_BUNDLE}
+      - RUNDECK_UUID=11111111-0000-0000-0000-222222222222
+      - CONFIG_SCRIPT_PRESTART=scripts/test-cluster/config-test-pre.sh
+#      - CONFIG_SCRIPT_POSTSTART=scripts/test-cluster/config-test-post.sh
 #      - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
     volumes:
-#      - ./dockers/rundeck/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
       - logs:/home/rundeck/logs:rw
       - testdata:/home/rundeck/testdata:rw
     networks:
@@ -93,6 +104,7 @@ services:
       - rundeck2
     environment:
       - RUNDECK_NODE=rundecktest
+      - RUNDECK_ROOT=${RUNDECK_BUNDLE}
     volumes:
       - testdata:/home/rundeck/testdata:rw
     networks:

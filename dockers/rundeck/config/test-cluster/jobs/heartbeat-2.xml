@@ -1,0 +1,39 @@
+<joblist>
+  <job>
+    <context>
+      <options preserveOrder='true'>
+        <option name='apikey' value='DcrVKxL5tE7LvHAM20s5oiqSiO9ssoZh' />
+        <option name='server_uuid' value='c867465d-d54c-46f4-8890-47aa551e967b' />
+        <option name='url' value='http://192.168.0.21:8080/rundeckpro' />
+      </options>
+    </context>
+    <description></description>
+    <executionEnabled>true</executionEnabled>
+    <group>cluster/c867465d-d54c-46f4-8890-47aa551e967b</group>
+    <id>84bac56b-080e-4d7f-adb6-1c9b590f04d0</id>
+    <loglevel>INFO</loglevel>
+    <name>heartbeat</name>
+    <schedule>
+      <month month='*' />
+      <time hour='*' minute='0/5' seconds='0' />
+      <weekday day='*' />
+      <year year='*' />
+    </schedule>
+    <scheduleEnabled>true</scheduleEnabled>
+    <sequence keepgoing='false' strategy='node-first'>
+      <command>
+        <description>get the instance system info</description>
+        <node-step-plugin type='rundeck-system:info'>
+          <configuration>
+            <entry key='apikey' value='${option.apikey}' />
+            <entry key='file' value='/home/vagrant/rundeck/RUNDECKNFS/heartbeat/${option.server_uuid}.xml' />
+            <entry key='format' value='resourcexml' />
+            <entry key='pretty-print' value='true' />
+            <entry key='url' value='${option.url}' />
+          </configuration>
+        </node-step-plugin>
+      </command>
+    </sequence>
+    <uuid>84bac56b-080e-4d7f-adb6-1c9b590f04d0</uuid>
+  </job>
+</joblist>

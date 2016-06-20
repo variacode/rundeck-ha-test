@@ -69,7 +69,6 @@ else
   echo "### Post start config not set. skipping..."
 fi
 
-
 ### Signal READY
 # here we should leave some file in a shared folder to signal that the server is ready. so tests can begin.
 touch $HOME/testdata/$RUNDECK_NODE.ready

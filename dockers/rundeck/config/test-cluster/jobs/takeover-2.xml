@@ -1,0 +1,52 @@
+<joblist>
+  <job>
+    <context>
+      <options preserveOrder='true'>
+        <option name='apikey' value='DcrVKxL5tE7LvHAM20s5oiqSiO9ssoZh' />
+        <option name='elapsed_threshold' value='300' />
+        <option name='model_files' value='/home/vagrant/rundeck/RUNDECKNFS/heartbeat' />
+        <option name='projects' value='"*"' />
+        <option name='url' value='http://192.168.0.20:8080/rundeckpro' />
+      </options>
+    </context>
+    <description>Takeover schedule from instances with stale heartbeat</description>
+    <dispatch>
+      <excludePrecedence>true</excludePrecedence>
+      <keepgoing>false</keepgoing>
+      <rankOrder>ascending</rankOrder>
+      <threadcount>1</threadcount>
+    </dispatch>
+    <executionEnabled>true</executionEnabled>
+    <group>cluster/376f1dc2-d800-4043-87ce-c966bccf5e22</group>
+    <id>75786b9b-6b86-4222-a3de-184b2bc6bcf8</id>
+    <loglevel>INFO</loglevel>
+    <name> schedule-owner</name>
+    <nodefilters>
+      <filter>tags: cluster !rundeck-serveruuid: 376f1dc2-d800-4043-87ce-c966bccf5e22</filter>
+    </nodefilters>
+    <nodesSelectedByDefault>true</nodesSelectedByDefault>
+    <schedule>
+      <month month='*' />
+      <time hour='*' minute='0/7' seconds='0' />
+      <weekday day='*' />
+      <year year='*' />
+    </schedule>
+    <scheduleEnabled>true</scheduleEnabled>
+    <sequence keepgoing='false' strategy='node-first'>
+      <command>
+        <node-step-plugin type='rundeck-system:schedule-takeover'>
+          <configuration>
+            <entry key='apikey' value='${option.apikey}' />
+            <entry key='exclude-project' value='${job.project}' />
+            <entry key='project' value='${option.projects}' />
+            <entry key='timestamp' value='${node.timestamp-epoch}' />
+            <entry key='timestamp-threshold' value='${option.elapsed_threshold}' />
+            <entry key='url' value='${option.url}' />
+            <entry key='uuid' value='all' />
+          </configuration>
+        </node-step-plugin>
+      </command>
+    </sequence>
+    <uuid>75786b9b-6b86-4222-a3de-184b2bc6bcf8</uuid>
+  </job>
+</joblist>
