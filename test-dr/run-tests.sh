@@ -26,6 +26,6 @@ sleep 3;
 
 #Tests OK!
 echo "All Tests successfully finished."
-exit 0;
+
 
 

@@ -24,11 +24,12 @@ services:
 #      - mysql
 #    entrypoint: bash /home/rundeck/run.sh
     environment:
-      - TEST_CONFIG_SCRIPT=scripts/test-dr/config-test.sh
       - RUNDECK_NODE=rundeck1
       - RUNDECK_ROLE=active
       - RUNDECK_URL=http://rundeck1:4440/${RUNDECK_BUNDLE}
       - RUNDECK_ROOT=${RUNDECK_BUNDLE}
+      - CONFIG_SCRIPT_PRESTART=scripts/test-dr/config-test-pre.sh
+      - CONFIG_SCRIPT_POSTSTART=scripts/test-dr/config-test-post.sh
 #      - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
     volumes:
 #      - ./dockers/rundeck/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
@@ -54,14 +55,14 @@ services:
 #      - mysql
 #    entrypoint: bash /home/rundeck/run.sh
     environment:
-      - TEST_CONFIG_SCRIPT=scripts/test-dr/config-test.sh
       - RUNDECK_NODE=rundeck2
       - RUNDECK_ROLE=passive
       - RUNDECK_URL=http://rundeck2:4440/${RUNDECK_BUNDLE}
       - RUNDECK_ROOT=${RUNDECK_BUNDLE}
+      - CONFIG_SCRIPT_PRESTART=scripts/test-dr/config-test-pre.sh
+      - CONFIG_SCRIPT_POSTSTART=scripts/test-dr/config-test-post.sh
 #      - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
     volumes:
-#      - ./dockers/rundeck/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
       - logs:/home/rundeck/logs:rw
       - testdata:/home/rundeck/testdata:rw
     networks:

@@ -1,5 +1,7 @@
 #!/bin/bash
 #### DR TEST CONFIGURATION.
+echo "DR test post config"
+
 
 # Request apitoken for servers
 TOKEN_R1=$($HOME/rrtokens rundeck-apitokens:create --token-user admin --url http://rundeck1:4440/$RUNDECK_ROOT --username admin --password admin)
