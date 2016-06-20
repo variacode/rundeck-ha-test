@@ -101,6 +101,7 @@ services:
       - rundeck2
     environment:
       - RUNDECK_NODE=rundecktest
+      - RUNDECK_ROOT=${RUNDECK_BUNDLE}
     volumes:
       - testdata:/home/rundeck/testdata:rw
     networks:

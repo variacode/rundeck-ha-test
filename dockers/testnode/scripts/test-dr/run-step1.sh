@@ -44,8 +44,8 @@ ping -qc3 rundeck2
 
 # Check Rundeck answering in both machines
 echo -en "\nCheck rundecks answering... "
-curl -sSfk -m5 http://rundeck1:4440/rundeckpro-dr
-curl -sSfk -m5 http://rundeck2:4440/rundeckpro-dr
+curl -sSfk -m5 http://rundeck1:4440/$RUNDECK_ROOT
+curl -sSfk -m5 http://rundeck2:4440/$RUNDECK_ROOT
 echo "OK"
 
 echo "sleeping a minute so we get some files to write"

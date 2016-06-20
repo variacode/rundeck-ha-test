@@ -39,12 +39,10 @@ VOLUME $HOME/var/log
 
 #COPY rdpro-installer $HOME/rdpro-installer
 #COPY rundeckpro-installer $HOME/rundeckpro-installer
-COPY scripts/run-step1.sh $HOME/run-step1.sh
-COPY scripts/run-step2.sh $HOME/run-step2.sh
+COPY scripts $HOME/scripts
 
 RUN chown -R $USERNAME:$USERNAME $HOME && \
-    chmod +x $HOME/*.sh $HOME/
-
+    chmod -R +x $HOME/scripts
 
 # Set Run Context
 USER $USERNAME

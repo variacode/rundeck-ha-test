@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DOCKER_COMPOSE_SPEC=docker-compose-dr.yml
+export DOCKER_COMPOSE_SPEC=docker-compose-dr.yml
 
 #Bundle to use on this test.
 export RUNDECK_BUNDLE=rundeckpro-dr
@@ -24,7 +24,7 @@ docker-compose -f $DOCKER_COMPOSE_SPEC up
 sleep 5
 
 # Start tests
-test-dr/run-tests.sh
+. test-dr/run-tests.sh
 
 # wait after finish
 sleep 3
