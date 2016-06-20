@@ -1,0 +1,123 @@
+version: '2'
+
+services:
+#  mysql:
+#    image: mysql:5.5
+#    ports:
+#      - "3306:3306"
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=root
+#      - MYSQL_DATABASE=rundeck
+#      - MYSQL_USER=rundeck
+#      - MYSQL_PASSWORD=rundeck
+#    networks:
+#      localnet:
+#        ipv4_address: 192.168.234.10
+
+  rundeck1:
+    hostname: rundeck1
+    build:
+      context: dockers/rundeck/
+      args:
+        RUNDECK_BUNDLE: ${RUNDECK_BUNDLE}
+#    links:
+#      - mysql
+#    entrypoint: bash /home/rundeck/run.sh
+    environment:
+      - RUNDECK_NODE=rundeck1
+      - RUNDECK_ROLE=active
+      - RUNDECK_URL=http://rundeck1:4440/${RUNDECK_BUNDLE}
+      - RUNDECK_ROOT=${RUNDECK_BUNDLE}
+#      - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
+    volumes:
+#      - ./dockers/rundeck/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+      - ./dockers/rundeck/scripts/run.sh:/home/rundeck/run.sh
+      - logs:/home/rundeck/logs:rw
+      - testdata:/home/rundeck/testdata:rw
+    networks:
+      localnet:
+        ipv4_address: 192.168.234.11
+    ports:
+      - "2222:22"
+      - "3000:3000"
+      - "4440:4440"
+      - "4443:4443"
+
+  rundeck2:
+    hostname: rundeck2
+    build:
+      context: dockers/rundeck/
+      args:
+        RUNDECK_BUNDLE: ${RUNDECK_BUNDLE}
+#    links:
+#      - mysql
+#    entrypoint: bash /home/rundeck/run.sh
+    environment:
+      - RUNDECK_NODE=rundeck2
+      - RUNDECK_ROLE=passive
+      - RUNDECK_URL=http://rundeck2:4440/${RUNDECK_BUNDLE}
+      - RUNDECK_ROOT=${RUNDECK_BUNDLE}
+#      - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
+    volumes:
+#      - ./dockers/rundeck/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+      - logs:/home/rundeck/logs:rw
+      - testdata:/home/rundeck/testdata:rw
+    networks:
+      localnet:
+        ipv4_address: 192.168.234.12
+    ports:
+      - "2223:22"
+      - "3001:3000"
+      - "4441:4440"
+      - "4444:4443"
+
+#  loadbalancer:
+#    hostname: loadbalancer
+#    image: nginx
+#    links:
+#      - rundeck1
+#      - rundeck2
+#      # - cesi
+#    volumes:
+#      - ./dockers/loadbalancer/etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+#      - ./dockers/loadbalancer/etc/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
+#      - ./dockers/loadbalancer/usr/share/nginx/html/:/usr/share/nginx/html/:ro
+#      - logs:/logs
+#    networks:
+#      localnet:
+#        ipv4_address: 192.168.234.13
+#    ports:
+#      - "80:80"
+#    environment:
+#      - NGINX_HOST=loadbalancer
+#      - NGINX_PORT=80
+
+  testnode:
+    hostname: rundecktest
+    build: dockers/testnode/
+    links:
+#      - mysql
+      - rundeck1
+      - rundeck2
+    environment:
+      - RUNDECK_NODE=rundecktest
+    volumes:
+      - testdata:/home/rundeck/testdata:rw
+    networks:
+      localnet:
+        ipv4_address: 192.168.234.2
+
+networks:
+  localnet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 192.168.234.0/24
+        gateway: 192.168.234.1
+
+volumes:
+  logs:
+  testdata:
+
+

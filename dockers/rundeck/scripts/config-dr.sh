@@ -3,80 +3,7 @@
 #exit on error
 set -e
 
-#Fix folder permissions
-sudo chown -R $USERNAME:$USERNAME $HOME;
-
-
-#TODO SACAR
-echo "######### RUN.SH ######### $RUNDECK_BUNDLE ##### $RUNDECK_ROOT #######"
-
-# Some Cleanup
-rm -rfv $HOME/server/logs/*
-rm -fv $HOME/testdata/*
-
-# Configure general stuff.
-./rdpro-installer configure-server-hostname --server-hostname $RUNDECK_NODE --rdeck-base $HOME
-./rdpro-installer configure-server-name --rdeck-base $HOME --server-name $RUNDECK_NODE
-./rdpro-installer configure-server-url --server-url $RUNDECK_URL --rdeck-base $HOME
-
-# open permissions via api
-rm -f $HOME/etc/apitoken.aclpolicy
-cp $HOME/etc/admin.aclpolicy $HOME/etc/apitoken.aclpolicy
-sed -i -e "s:admin:api_token_group:" $HOME/etc/apitoken.aclpolicy
-
-
-# Configure passive mode if applies.
-if [[ X$RUNDECK_ROLE == 'Xpassive' ]] ;
-then
-    # Here all instructions to run in the passive pre-start
-    echo "This is the passive instance. Configuring passive Node";
-    ./rdpro-installer configure-execution-mode --rdeck-base $HOME --execution-mode passive;
-
-else
-    # Here all instructions to run in the active pre-start
-    echo "This is the active Instance";
-
-fi
-
-# PARTY HARD
-./rdpro-installer start --rdeck-base $HOME
-
-# Wait for server to start
-LOGFILE=$HOME/server/logs/catalina.out
-SUCCESS_MSG="INFO: Server startup in"
-MAX_ATTEMPTS=30
-SLEEP=10
-echo "Waiting for $RUNDECK_NODE to start. This will take about 2 minutes... "
-declare -i count=0
-while (( count <= MAX_ATTEMPTS ))
-do
-    if ! grep "${SUCCESS_MSG}" "$LOGFILE"
-    then  echo "Still working. hang on..."; # output a progress character.
-    else  break; # found successful startup message.
-    fi
-    (( count += 1 ))  ; # increment attempts counter.
-    (( count == MAX_ATTEMPTS )) && {
-        echo >&2 "FAIL: Reached max attempts to find success message in catalina.out. Exiting."
-        exit 1
-    }
-    sleep $SLEEP; # wait before trying again.
-
-done
-echo "RUNDECK NODE $RUNDECK_NODE started successfully!!"
-
-
-### POST CONFIG
-
-# Request apitoken for servers
-export TOKEN_R1=$($HOME/rrtokens rundeck-apitokens:create --token-user admin --url http://rundeck1:4440/rundeckpro-dr --username admin --password admin)
-export TOKEN_R2=$($HOME/rrtokens rundeck-apitokens:create --token-user admin --url http://rundeck2:4440/rundeckpro-dr --username admin --password admin)
-
-
 #### DR TEST CONFIGURATION.
-
-## TODO SCAR
-exit 1
-
 
 # Create Replication Jobs and API Tokens.
 if [[ X$RUNDECK_ROLE == 'Xpassive' ]] ;
@@ -157,6 +84,9 @@ else
     curl -sSf -H "X-Rundeck-Auth-Token: $TOKEN_R1" -F xmlBatch=@$HOME/config/test-dr/job.xml http://rundeck1:4440/rundeckpro-dr/api/17/jobs/import?project=testproject
 
 fi
+
+
+### END DR TEST CONFIG.
 
 
 ### Signal READY
