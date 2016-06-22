@@ -24,17 +24,21 @@ services:
       - mysql
 #    entrypoint: bash /home/rundeck/run.sh
     environment:
+      - CONFIG_SCRIPT_PRESTART=scripts/test-cluster/config-test-pre.sh
+      - CONFIG_SCRIPT_POSTSTART=scripts/test-cluster/config-test-post.sh
       - RUNDECK_NODE=rundeck1
-      - RUNDECK_ROLE=active
       - RUNDECK_URL=http://rundeck1:4440/${RUNDECK_BUNDLE}
       - RUNDECK_ROOT=${RUNDECK_BUNDLE}
-      - RUNDECK_UUID=11111111-0000-0000-0000-111111111111
-      - CONFIG_SCRIPT_PRESTART=scripts/test-cluster/config-test-pre.sh
-#      - CONFIG_SCRIPT_POSTSTART=scripts/test-cluster/config-test-post.sh
-#      - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
+      - RUNDECK_UUID=01010101-0000-0000-0000-111111111111
+      - RUNDECK_ROLE=leader
+      - DATABASE_DRIVER=com.mysql.jdbc.Driver
+      - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
+      - DATABASE_USER=rundeck
+      - DATABASE_PASS=rundeck
     volumes:
       - logs:/home/rundeck/logs:rw
       - testdata:/home/rundeck/testdata:rw
+      - resources:/home/rundeck/resources:rw
     networks:
       localnet:
         ipv4_address: 192.168.234.11
@@ -53,18 +57,21 @@ services:
     links:
       - mysql
     environment:
-      - RUNDECK_NODE=rundeck2
-      - RUNDECK_ROLE=passive
-      - RUNDECK_URL=http://rundeck2:4441/${RUNDECK_BUNDLE}
-#      - RUNDECK_URL=http://rundeck2:4440/${RUNDECK_BUNDLE}
-      - RUNDECK_ROOT=${RUNDECK_BUNDLE}
-      - RUNDECK_UUID=11111111-0000-0000-0000-222222222222
       - CONFIG_SCRIPT_PRESTART=scripts/test-cluster/config-test-pre.sh
-#      - CONFIG_SCRIPT_POSTSTART=scripts/test-cluster/config-test-post.sh
-#      - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
+      - CONFIG_SCRIPT_POSTSTART=scripts/test-cluster/config-test-post.sh
+      - RUNDECK_NODE=rundeck2
+      - RUNDECK_URL=http://rundeck2:4440/${RUNDECK_BUNDLE}
+      - RUNDECK_ROOT=${RUNDECK_BUNDLE}
+      - RUNDECK_UUID=02020202-0000-0000-0000-222222222222
+      - RUNDECK_ROLE=member
+      - DATABASE_DRIVER=com.mysql.jdbc.Driver
+      - DATABASE_URL=jdbc:mysql://mysql:3306/rundeck
+      - DATABASE_USER=rundeck
+      - DATABASE_PASS=rundeck
     volumes:
       - logs:/home/rundeck/logs:rw
       - testdata:/home/rundeck/testdata:rw
+      - resources:/home/rundeck/resources:rw
     networks:
       localnet:
         ipv4_address: 192.168.234.12
@@ -99,7 +106,6 @@ services:
     hostname: rundecktest
     build: dockers/testnode/
     links:
-#      - mysql
       - rundeck1
       - rundeck2
     environment:
@@ -123,5 +129,6 @@ networks:
 volumes:
   logs:
   testdata:
+  resources:
 
 

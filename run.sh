@@ -6,8 +6,8 @@ cd $SCRIPTDIR
 
 set -ex
 
-# tickle installer for it to rebuild
-date > dockers/rundeck/rundeckpro-installer/build_control
+# poke installer to force docker to rebuild it.
+#date > dockers/rundeck/rundeckpro-installer/build_control
 
 # RUN DR TEST
 #test-dr/run.sh

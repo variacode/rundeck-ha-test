@@ -1,14 +1,14 @@
 #!/bin/bash
 #### DR TEST CONFIGURATION.
-echo "Cluster test pre config"
+echo "CLUSTER test pre config"
 
 
 #Configure database
 ./rdpro-installer configure-datasource \
-   --datasource-driver com.mysql.jdbc.Driver \
-   --datasource-username rundeck \
-   --datasource-password rundeck \
-   --datasource-url jdbc:mysql://mysql:3306/rundeck \
+   --datasource-driver $DATABASE_DRIVER \
+   --datasource-url $DATABASE_URL \
+   --datasource-username $DATABASE_USER \
+   --datasource-password $DATABASE_PASS \
    --rdeck-base $HOME
 
 # Enable cluster mode
