@@ -1,7 +1,7 @@
 #!/bin/bash
 #
-# DR TESTS STAGE 2 - Tests before rundeck1 down.
-echo "Begin DR Test Step 1 (before fail)"
+# CLUSTER TESTS STAGE 1 - Tests before rundeck1 down.
+echo "Begin Cluster Test Step 1 (before fail)"
 
 #DIR=$(cd `dirname $0` && pwd)
 #source $DIR/include.sh
@@ -26,6 +26,8 @@ do
     }
     sleep $SLEEP; # wait before trying again.
 done
+# Give 5 more seconds so nodes settle down their config and resources.
+sleep 5
 echo -e "\n\nRundeck Nodes READY. Beginning tests..."
 
 #BEGIN TEST
@@ -48,20 +50,29 @@ curl -sSfk -m5 http://rundeck1:4440/$RUNDECK_ROOT
 curl -sSfk -m5 http://rundeck2:4440/$RUNDECK_ROOT
 echo "OK"
 
-echo "sleeping a minute so we get some files to write"
-sleep 60
+echo "Sleeping two minutes so we get some files to write"
+sleep 120
 
 # Check Rundeck 1 Working.
 # Check that the test job created on node 1 is working correctly
 echo -n "Check Node 1 working... "
-test 0 -lt $(find . -mmin -0.5 -regex '.*rundeck1_[0-9].+' | wc -l)
+test 0 -lt $(find . -mmin -0.5 -regex '.*host-rundeck1_node-rundeck1_[0-9].+' | wc -l)
 echo "OK"
 
-#Check that the test job created on node 2 is NOT working
-echo -n "Check Node 2 not working... "
-test 0 -eq $(find . -mmin -0.5 -regex '.*rundeck2_[0-9].+' | wc -l)
+# Check that the test job created on node 2 is working correctly
+echo -n "Check Node 2 working... "
+test 0 -lt $(find . -mmin -0.5 -regex '.*host-rundeck2_node-rundeck2_[0-9].+' | wc -l)
+echo "OK"
+
+# Check for erroneous takeovers
+echo -n "Check we don't have takeovers from node 1... "
+test 0 -eq $(find . -mmin -0.5 -regex '.*host-rundeck1_node-rundeck2_[0-9].+' | wc -l)
+echo "OK"
+
+echo -n "Check we don't have takeovers from node 2... "
+test 0 -eq $(find . -mmin -0.5 -regex '.*host-rundeck2_node-rundeck1_[0-9].+' | wc -l)
 echo "OK"
 
 # Release Resources.
-echo "DR Tests Step 1 OK..."
+echo "Cluster Tests Step 1 OK..."
 exit 0

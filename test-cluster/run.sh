@@ -5,7 +5,7 @@ export DOCKER_COMPOSE_SPEC=docker-compose-test-cluster.yml
 #Bundle to use on this test.
 export RUNDECK_BUNDLE=rundeckpro-cluster
 
-set -ex
+set -e
 
 # tickle installer for it to rebuild
 #date > dockers/rundeck/rundeckpro-installer/build_control
@@ -17,20 +17,20 @@ docker-compose -f $DOCKER_COMPOSE_SPEC down --volumes --remove-orphans
 docker-compose -f $DOCKER_COMPOSE_SPEC build
 
 # run docker
-docker-compose -f $DOCKER_COMPOSE_SPEC up
-#docker-compose -f $DOCKER_COMPOSE_SPEC up -d
+#docker-compose -f $DOCKER_COMPOSE_SPEC up
+docker-compose -f $DOCKER_COMPOSE_SPEC up -d
 
 # Wait a little to start tests
 sleep 5
 
 # Start tests
-. test-dr/run-tests.sh
+. test-cluster/run-tests.sh
 
 # wait after finish
 sleep 3
 
 # Stop and clean all
-docker-compose down --volumes --remove-orphans
+docker-compose -f $DOCKER_COMPOSE_SPEC down --volumes --remove-orphans
 
 
 

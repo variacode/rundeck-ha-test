@@ -4,10 +4,13 @@ SCRIPTFILE=$(readlink -f "$0")
 SCRIPTDIR=$(dirname "$SCRIPTFILE")
 cd $SCRIPTDIR
 
-set -x
+for composefile in $(ls -1 docker-compose-*.yml); do
+  echo "=== Purging resources from $composefile..."
+  docker-compose -f $composefile down --volumes --remove-orphans
+done
 
-docker-compose -f docker-compose-test-cluster.yml down --volumes --remove-orphans
-docker-compose -f docker-compose-test-dr.yml down --volumes --remove-orphans
+
+
 
 
 

@@ -2,20 +2,20 @@
   <job>
     <context>
       <options preserveOrder='true'>
-        <option name='apikey' value='DcrVKxL5tE7LvHAM20s5oiqSiO9ssoZh' />
-        <option name='server_uuid' value='376f1dc2-d800-4043-87ce-c966bccf5e22' />
-        <option name='url' value='http://192.168.0.20:8080/rundeckpro' />
+        <option name='apikey' value='%%APIKEY%%' />
+        <option name='server_uuid' value='01010101-0000-0000-0000-111111111111' />
+        <option name='url' value='%%RUNDECK_URL%%' />
       </options>
     </context>
     <description></description>
     <executionEnabled>true</executionEnabled>
-    <group>cluster/376f1dc2-d800-4043-87ce-c966bccf5e22</group>
+    <group>cluster/01010101-0000-0000-0000-111111111111</group>
     <id>4e853f19-d225-491b-b1d7-61b2bf993e48</id>
     <loglevel>INFO</loglevel>
     <name>heartbeat</name>
     <schedule>
       <month month='*' />
-      <time hour='*' minute='0/5' seconds='0' />
+      <time hour='*' minute='*' seconds='0/15' />
       <weekday day='*' />
       <year year='*' />
     </schedule>
@@ -26,7 +26,7 @@
         <node-step-plugin type='rundeck-system:info'>
           <configuration>
             <entry key='apikey' value='${option.apikey}' />
-            <entry key='file' value='/home/vagrant/rundeck/RUNDECKNFS/heartbeat/${option.server_uuid}.xml' />
+            <entry key='file' value='/home/rundeck/resources/heartbeat/${option.server_uuid}.xml' />
             <entry key='format' value='resourcexml' />
             <entry key='pretty-print' value='true' />
             <entry key='url' value='${option.url}' />

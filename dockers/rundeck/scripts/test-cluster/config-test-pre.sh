@@ -32,4 +32,6 @@ rerun/rerun rundeck-plugin:node-steps \
 mkdir -p $HOME/libext
 cp $HOME/rerun-builds/rundeck-system.zip $HOME/libext/
 
+# Create shared resource folders
+mkdir -p $HOME/resources/cluster $HOME/resources/heartbeat
 

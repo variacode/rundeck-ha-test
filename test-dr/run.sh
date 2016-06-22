@@ -5,7 +5,7 @@ export DOCKER_COMPOSE_SPEC=docker-compose-test-dr.yml
 #Bundle to use on this test.
 export RUNDECK_BUNDLE=rundeckpro-dr
 
-set -ex
+set -e
 
 # tickle installer for it to rebuild
 #date > dockers/rundeck/rundeckpro-installer/build_control

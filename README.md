@@ -12,28 +12,31 @@ The test will check the platform starts OK, then will kill the primary node, and
 
 ##TO RUN:
 
-just run: ./run.sh
+just run: `./run.sh`
 
 ##Other Commands:
 
+### To watch the server logs while tests are running.
+`docker-compose -f <test docker-compose yml> logs -f`
+
 ### To bring up the platform without running the tests:
-docker-compose build; docker-compose up
+`docker-compose -f <test docker-compose yml> build; docker-compose up`
 
 ### To login into the machines
 #### node 1
-docker-compose exec rundeck1 bash -l
+`docker-compose -f <test docker-compose yml> exec rundeck1 bash -l`
 #### node 2
-docker-compose exec rundeck2 bash -l
+`docker-compose -f <test docker-compose yml> exec rundeck2 bash -l`
 #### test observer
-docker-compose exec testnode bash -l
+`docker-compose -f <test docker-compose yml> exec testnode bash -l`
 
 
 ### To run the tests manually
-./scripts/run-tests.sh
+`./scripts/run-tests.sh`
 
 
 ### To clear all container info including storage volumes
-docker-compose down -v --remove-orphans
+`./clean.sh`
 
 
 

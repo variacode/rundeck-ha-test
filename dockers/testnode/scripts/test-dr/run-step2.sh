@@ -2,7 +2,7 @@
 
 #
 # DR TESTS STAGE 2 - Tests after rundeck1 down.
-echo "Begin Test Stage 2"
+echo "Begin DR Test Step 2 (after fail)"
 
 #DIR=$(cd `dirname $0` && pwd)
 #source $DIR/include.sh
@@ -46,7 +46,7 @@ echo "OK"
 
 
 # Release Resources.
-echo "Stage 2 Tests OK..."
+echo "DR Tests Step 2 OK..."
 
 #cleanup
 #rm -fv $HOME/testdata/* || true

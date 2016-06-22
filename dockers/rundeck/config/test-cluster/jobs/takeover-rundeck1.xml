@@ -2,14 +2,14 @@
   <job>
     <context>
       <options preserveOrder='true'>
-        <option name='apikey' value='DcrVKxL5tE7LvHAM20s5oiqSiO9ssoZh' />
-        <option name='elapsed_threshold' value='360' />
-        <option name='model_files' value='/home/vagrant/rundeck/RUNDECKNFS/heartbeat' />
+        <option name='apikey' value='%%APIKEY%%' />
+        <option name='elapsed_threshold' value='60' />
+        <option name='model_files' value='/home/rundeck/resources/heartbeat' />
         <option name='projects' value='"*"' />
-        <option name='url' value='http://192.168.0.21:8080/rundeckpro' />
+        <option name='url' value='%%RUNDECK_URL%%' />
       </options>
     </context>
-    <description>Takeover schedule from instances with stale heartbeat, test 2</description>
+    <description>Takeover schedule from instances with stale heartbeat</description>
     <dispatch>
       <excludePrecedence>true</excludePrecedence>
       <keepgoing>false</keepgoing>
@@ -17,17 +17,17 @@
       <threadcount>1</threadcount>
     </dispatch>
     <executionEnabled>true</executionEnabled>
-    <group>cluster/c867465d-d54c-46f4-8890-47aa551e967b</group>
+    <group>cluster/01010101-0000-0000-0000-111111111111</group>
     <id>6e5d7f3d-5d5d-4ead-8906-556ba6a9cac8</id>
     <loglevel>INFO</loglevel>
     <name> schedule-owner</name>
     <nodefilters>
-      <filter>tags: cluster !rundeck-serveruuid: c867465d-d54c-46f4-8890-47aa551e967b</filter>
+      <filter>tags: cluster !rundeck-serveruuid: 01010101-0000-0000-0000-111111111111</filter>
     </nodefilters>
     <nodesSelectedByDefault>true</nodesSelectedByDefault>
     <schedule>
       <month month='*' />
-      <time hour='*' minute='0/7' seconds='0' />
+      <time hour='*' minute='*' seconds='0/30' />
       <weekday day='*' />
       <year year='*' />
     </schedule>
