@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 #RAM
-RAM_BIG = 1300;
+RAM_BIG = 2048;
 RAM_SMALL = 512;
 
 # Box images definition
@@ -32,7 +32,7 @@ Vagrant.configure(2) do |config|
     mysql.vm.network 'private_network', ip: "192.168.50.10", netmask: "255.255.255.0"
 
     #setup mysql
-    mysql.vm.provision :shell, path: "files/setup-mysql.sh"
+    mysql.vm.provision :shell, path: "scripts/setup-mysql.sh"
 
   end
 
@@ -51,10 +51,11 @@ Vagrant.configure(2) do |config|
     rundeck1.vm.synced_folder "files", "/files"
     rundeck1.vm.synced_folder "config", "/config"
     rundeck1.vm.synced_folder "config/rundeck1", "/rundeck_config"
+    rundeck1.vm.synced_folder "testdata/rundeck1", "/testresults"
     rundeck1.vm.provision "shell", inline: "copy c:\\files\\rundeckpro-cluster-1.3.8-SNAPSHOT.war c:\\rundeckpro.war"
 
     #Install & setup software
-    rundeck1.vm.provision :shell, path: "files/setup-windows-node.bat"
+    rundeck1.vm.provision :shell, path: "scripts/setup-windows-node.bat"
 
   end
 
@@ -74,14 +75,16 @@ Vagrant.configure(2) do |config|
     rundeck2.vm.synced_folder "files", "/files"
     rundeck2.vm.synced_folder "config", "/config"
     rundeck2.vm.synced_folder "config/rundeck2", "/rundeck_config"
-    rundeck2.vm.provision "shell", inline: "copy c:\\files\\rundeckpro-cluster-1.3.8-SNAPSHOT.war c:\\rundeckpro.war"
+    rundeck2.vm.synced_folder "testdata/rundeck2", "/testresults"
+    # rundeck2.vm.provision "shell", inline: "copy c:\\files\\#{ENV['RUNDECK_WAR']} c:\\rundeckpro.war"
+    rundeck2.vm.provision "shell", inline: "copy c:\\files\\rundeckpro-cluster-1.3.8-SNAPSHOT.war  c:\\rundeckpro.war"
 
     #Install & setup software
-    rundeck2.vm.provision :shell, path: "files/setup-windows-node.bat"
+    rundeck2.vm.provision :shell, path: "scripts/setup-windows-node.bat"
 
   end
 
-  # Shared database machine
+  # Test Node.
   config.vm.define "testnode" do |testnode|
     testnode.vm.box = BOX_LINUX
 
@@ -92,8 +95,12 @@ Vagrant.configure(2) do |config|
     testnode.vm.hostname = "testnode"
     testnode.vm.network 'private_network', ip: "192.168.50.50", netmask: "255.255.255.0"
 
-    #setup mysql
-    # testnode.vm.provision :shell, path: "files/setup-mysql.sh"
+    testnode.vm.synced_folder "scripts", "/scripts"
+    testnode.vm.synced_folder "files", "/files"
+    testnode.vm.synced_folder "config", "/configfiles"
+
+    #setup tests
+    testnode.vm.provision :shell, inline: "su vagrant -c /scripts/prepare-tests.sh"
 
   end
 

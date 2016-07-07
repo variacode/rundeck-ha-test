@@ -1,0 +1,52 @@
+<joblist>
+  <job>
+    <context>
+      <options preserveOrder='true'>
+        <option name='apikey' value='%%APIKEY%%' />
+        <option name='elapsed_threshold' value='60' />
+        <option name='model_files' value='c:\\resources\\heartbeat' />
+        <option name='projects' value='"*"' />
+        <option name='url' value='%%RUNDECK_URL%%' />
+      </options>
+    </context>
+    <description>Takeover schedule from instances with stale heartbeat</description>
+    <dispatch>
+      <excludePrecedence>true</excludePrecedence>
+      <keepgoing>false</keepgoing>
+      <rankOrder>ascending</rankOrder>
+      <threadcount>1</threadcount>
+    </dispatch>
+    <executionEnabled>true</executionEnabled>
+    <group>cluster/01010101-0000-0000-0000-111111111111</group>
+    <id>6e5d7f3d-5d5d-4ead-8906-556ba6a9cac8</id>
+    <loglevel>INFO</loglevel>
+    <name> schedule-owner</name>
+    <nodefilters>
+      <filter>tags: cluster !rundeck-serveruuid: 01010101-0000-0000-0000-111111111111</filter>
+    </nodefilters>
+    <nodesSelectedByDefault>true</nodesSelectedByDefault>
+    <schedule>
+      <month month='*' />
+      <time hour='*' minute='*' seconds='0/60' />
+      <weekday day='*' />
+      <year year='*' />
+    </schedule>
+    <scheduleEnabled>true</scheduleEnabled>
+    <sequence keepgoing='false' strategy='node-first'>
+      <command>
+        <node-step-plugin type='rundeck-system:schedule-takeover'>
+          <configuration>
+            <entry key='apikey' value='${option.apikey}' />
+            <entry key='exclude-project' value='${job.project}' />
+            <entry key='project' value='${option.projects}' />
+            <entry key='timestamp' value='${node.timestamp-epoch}' />
+            <entry key='timestamp-threshold' value='${option.elapsed_threshold}' />
+            <entry key='url' value='${option.url}' />
+            <entry key='uuid' value='all' />
+          </configuration>
+        </node-step-plugin>
+      </command>
+    </sequence>
+    <uuid>6e5d7f3d-5d5d-4ead-8906-556ba6a9cac8</uuid>
+  </job>
+</joblist>

@@ -2,7 +2,7 @@
 
 # Stop and clean all
 vagrant destroy --force
-rm -rf testdata/* tmp
+rm -rf testdata tmp
 
 
 

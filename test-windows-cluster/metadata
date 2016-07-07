@@ -1,0 +1,6 @@
+RUNDECK_VERSION=${RUNDECK_VERSION:-"1.3.8-SNAPSHOT"}
+RUNDECK_APPNAME=${RUNDECK_APPNAME:-"rundeckpro-cluster"}
+TOMCAT_VERSION=${TOMCAT_VERSION:-"7.0.54"}
+RUNDECK_WAR=$RUNDECK_APPNAME-$RUNDECK_VERSION.war
+#ARTIFACTS_URL=https://s3.amazonaws.com/dev.download.simplifyops.com
+ARTIFACTS_URL=https://s3-sa-east-1.amazonaws.com/rdeckpro-tests
