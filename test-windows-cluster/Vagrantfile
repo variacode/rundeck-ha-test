@@ -2,13 +2,8 @@
 # vi: set ft=ruby :
 
 #RAM
-RAM_BIG = 2048;
+RAM_BIG = 1300;
 RAM_SMALL = 512;
-
-# Network configuration
-DOMAIN = ".test.rundeck.org"
-NETWORK = "192.168.50."
-NETMASK = "255.255.255.0"
 
 # Box images definition
 BOX_LINUX = 'ubuntu/trusty64'
@@ -86,9 +81,26 @@ Vagrant.configure(2) do |config|
 
   end
 
+  # Shared database machine
+  config.vm.define "testnode" do |testnode|
+    testnode.vm.box = BOX_LINUX
+
+    testnode.vm.provider "virtualbox" do |vbox|
+      vbox.memory = RAM_SMALL
+    end
+
+    testnode.vm.hostname = "testnode"
+    testnode.vm.network 'private_network', ip: "192.168.50.50", netmask: "255.255.255.0"
+
+    #setup mysql
+    # testnode.vm.provision :shell, path: "files/setup-mysql.sh"
+
+  end
 
   #Global shared folder
   config.vm.synced_folder "testdata", "/testdata"
+  config.vm.synced_folder "testdata/rundeckprologs", "/rundeckprologs"
+  config.vm.synced_folder "testdata/resources", "/resources"
 
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the

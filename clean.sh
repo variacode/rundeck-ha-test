@@ -9,7 +9,8 @@ for composefile in $(ls -1 docker-compose-*.yml); do
   docker-compose -f $composefile down --volumes --remove-orphans
 done
 
-
+#Purge tests data
+test-windows-cluster/clean.sh
 
 
 
