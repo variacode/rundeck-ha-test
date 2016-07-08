@@ -3,7 +3,7 @@
     <context>
       <options preserveOrder='true'>
         <option name='apikey' value='%%APIKEY%%' />
-        <option name='elapsed_threshold' value='60' />
+        <option name='elapsed_threshold' value='120' />
         <option name='model_files' value='c:\\resources\\heartbeat' />
         <option name='projects' value='"*"' />
         <option name='url' value='%%RUNDECK_URL%%' />
@@ -34,7 +34,7 @@
     <scheduleEnabled>true</scheduleEnabled>
     <sequence keepgoing='false' strategy='node-first'>
       <command>
-        <node-step-plugin type='rundeck-system:schedule-takeover'>
+        <node-step-plugin type='schedule-takeover'>
           <configuration>
             <entry key='apikey' value='${option.apikey}' />
             <entry key='exclude-project' value='${job.project}' />

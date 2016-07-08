@@ -34,7 +34,7 @@ echo "Waiting for nodes to start. This will take about 5 minutes... "
 declare -i count=0
 while (( count <= MAX_ATTEMPTS ))
 do
-    if ! ( curl -sSfk -m5 $RUNDECK1_URL/login && curl -sSfk -m5 $RUNDECK2_URL/login )
+    if ! ( curl -sSfk -m5 $RUNDECK1_URL/login >/dev/null && curl -sSfk -m5 $RUNDECK2_URL/login >/dev/null )
     then  echo "Still waiting. hang on..."; # output a progress character.
     else  break; # found successful startup message.
     fi
@@ -68,7 +68,7 @@ curl -sSf -H "X-Rundeck-Auth-Token: $APITOKEN_R1" -H "Accept: application/json" 
   "config": {
     "project.description" : "",
     "project.name" : "PRO_HA",
-    "project.nodeCache.delay" : "15",
+    "project.nodeCache.delay" : "10",
     "project.nodeCache.enabled" : "false",
     "resources.source.1.config.file" : "c:\\rundeckpro\\projects\\PRO_HA\\etc\\resources.xml",
     "resources.source.1.config.format" : "resourcexml",

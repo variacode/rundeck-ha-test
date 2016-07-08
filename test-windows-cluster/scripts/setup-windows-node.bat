@@ -28,11 +28,11 @@ echo Copy additionatl log4j file...
 robocopy c:\config\tomcat7\webapps c:\tomcat7\webapps /E
 
 echo Deploy rundeck-system plugin
-copy c:\testdata\plugins\rundeck-system.zip c:\rundeckpro\libext
+copy c:\files\rundeck-system-windows.zip c:\rundeckpro\libext
 
 echo restart tomcat...
 c:\tomcat7\bin\tomcat7.exe stop
-timeout 5 /nobreak
+timeout 6 /nobreak
 echo killing tomcat...
 taskkill /F /T /IM Tomcat7.exe
 timeout 2 /nobreak
@@ -41,3 +41,4 @@ c:\tomcat7\bin\tomcat7.exe start
 echo Sleeping one minute to get rundeck started...
 timeout 60 /NOBREAK
 
+echo Done.

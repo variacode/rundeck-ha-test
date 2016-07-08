@@ -6,7 +6,7 @@
         <name>Create File each N seconds.</name>
         <schedule>
             <month month='*' />
-            <time hour='*' minute='*' seconds='0/30' />
+            <time hour='*' minute='*' seconds='0/20' />
             <weekday day='*' />
             <year year='*' />
         </schedule>

@@ -23,7 +23,7 @@
     <sequence keepgoing='false' strategy='node-first'>
       <command>
         <description>get the instance system info</description>
-        <node-step-plugin type='rundeck-system:info'>
+        <node-step-plugin type='info'>
           <configuration>
             <entry key='apikey' value='${option.apikey}' />
             <entry key='file' value='c:\\resources\\heartbeat\\${option.server_uuid}.xml' />
@@ -37,3 +37,4 @@
     <uuid>4e853f19-d225-491b-b1d7-61b2bf993e48</uuid>
   </job>
 </joblist>
+
