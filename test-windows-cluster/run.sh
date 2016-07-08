@@ -25,14 +25,11 @@ scripts/prepare-test-env.sh
 # init machines.
 vagrant up
 
-# Wait a little to start tests
-#echo "Waiting a little to start tests..."
-#sleep 10
-
 # Start tests
+scripts/run-tests.sh
 
 # wait after finish
-#sleep 3
+sleep 3
 
 # Stop and clean all
 #vagrant destroy --force

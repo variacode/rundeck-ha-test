@@ -2,6 +2,9 @@
 #
 # CLUSTER TESTS STAGE 1 - Tests before rundeck1 down.
 echo "Begin Cluster Test Step 1 (before fail)"
+# Set exit on error
+set -e
+
 
 WORKDIR=/testdata
 CONFDIR=$HOME/config
@@ -10,9 +13,6 @@ RUNDECK1_URL="http://rundeck1:8080/rundeckpro"
 RUNDECK2_URL="http://rundeck2:8080/rundeckpro"
 
 #BEGIN TEST
-
-# Set exit on error
-set -e
 
 #Config
 
@@ -26,9 +26,6 @@ echo -en "\nCheck rundecks answering... "
 curl -sSfk -m5 $RUNDECK1_URL
 curl -sSfk -m5 $RUNDECK2_URL
 echo "OK"
-
-echo "Sleeping 2 minutes so we get some jobs to run"
-sleep 120
 
 # Check Rundeck 1 Working.
 # Check that the test job created on node 1 is working correctly

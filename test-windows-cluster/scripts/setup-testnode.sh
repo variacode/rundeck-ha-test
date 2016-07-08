@@ -149,3 +149,6 @@ curl -sSf -H "X-Rundeck-Auth-Token: $APITOKEN_R2" -F xmlBatch=@$worker_spec2 \
     $RUNDECK2_URL/api/17/jobs/import?project=testproject
 
 
+# Sleep awhile to let the nodes to settle.
+echo "Sleep 3 minutes to let the cluster settle"
+sleep 180
