@@ -1,4 +1,7 @@
 #!/bin/bash
+# Check we are in correct dir.
+cd $(dirname "$0")
+
 
 set -ex
 
@@ -17,9 +20,10 @@ mkdir -p  testdata/resources/cluster \
           testdata/resources \
           testdata/rundeckprologs
 
+#Clean up prior executions
 vagrant destroy --force
 
-# re-build docker env
+# Prepare test resources
 scripts/prepare-test-env.sh
 
 # init machines.
@@ -32,8 +36,8 @@ scripts/run-tests.sh
 sleep 3
 
 # Stop and clean all
-#vagrant destroy --force
-#rm -rf testdata/* tmp
+vagrant destroy --force
+rm -rf testdata tmp
 
 
 

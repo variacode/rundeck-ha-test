@@ -1,8 +1,6 @@
 #!/bin/bash
 # Check we are in correct dir.
-SCRIPTFILE=$(readlink -f "$0")
-SCRIPTDIR=$(dirname "$SCRIPTFILE")
-cd $SCRIPTDIR
+cd $(dirname "$0")
 
 for composefile in $(ls -1 docker-compose-*.yml); do
   echo "=== Purging resources from $composefile..."

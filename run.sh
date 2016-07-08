@@ -1,8 +1,7 @@
 #!/bin/bash
 # Check we are in correct dir.
-SCRIPTFILE=$(readlink -f "$0")
-SCRIPTDIR=$(dirname "$SCRIPTFILE")
-cd $SCRIPTDIR
+cd $(dirname "$0")
+
 
 set -e
 
@@ -15,6 +14,8 @@ test-dr/run.sh
 #Run Cluster Test
 test-cluster/run.sh
 
+#Run Cluster Windows
+test-windows-cluster/run.sh
 
 
 
