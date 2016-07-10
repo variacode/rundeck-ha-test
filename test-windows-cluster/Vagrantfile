@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 #RAM
-RAM_BIG = 2048;
+RAM_BIG = 1024;
 RAM_SMALL = 512;
 
 # Box images definition
@@ -95,7 +95,6 @@ Vagrant.configure(2) do |config|
     testnode.vm.hostname = "testnode"
     testnode.vm.network 'private_network', ip: "192.168.50.50", netmask: "255.255.255.0"
 
-    testnode.vm.synced_folder "scripts", "/scripts"
     testnode.vm.synced_folder "files", "/files"
     testnode.vm.synced_folder "config", "/configfiles"
 
@@ -105,6 +104,7 @@ Vagrant.configure(2) do |config|
   end
 
   #Global shared folder
+  config.vm.synced_folder "scripts", "/scripts"
   config.vm.synced_folder "testdata", "/testdata"
   config.vm.synced_folder "testdata/rundeckprologs", "/rundeckprologs"
   config.vm.synced_folder "testdata/resources", "/resources"

@@ -34,7 +34,7 @@ echo "Waiting for nodes to start. This will take about 5 minutes... "
 declare -i count=0
 while (( count <= MAX_ATTEMPTS ))
 do
-    if ! ( curl -sSfk -m5 $RUNDECK1_URL/login >/dev/null && curl -sSfk -m5 $RUNDECK2_URL/login >/dev/null )
+    if ! ( curl -sSfk -m10 $RUNDECK1_URL/login >/dev/null && curl -sSfk -m10 $RUNDECK2_URL/login >/dev/null )
     then  echo "Still waiting. hang on..."; # output a progress character.
     else  break; # found successful startup message.
     fi
