@@ -36,8 +36,6 @@ fi
 echo "Downloading Rundeck WAR"
 wget -O $FILESDIR/rundeckpro.war $ARTIFACTS_URL/$RUNDECK_WAR
 
-exit 0
-
 
 # Get rome rundeck tools
 git clone https://github.com/rerun/rerun $WORKDIR/rerun
