@@ -1,6 +1,26 @@
+
+# The rundeck version to use for the tests
 RUNDECK_VERSION=${RUNDECK_VERSION:-"1.3.8-SNAPSHOT"}
+
+# The bundle name
 RUNDECK_APPNAME=${RUNDECK_APPNAME:-"rundeckpro-cluster"}
-TOMCAT_VERSION=${TOMCAT_VERSION:-"7.0.54"}
+
+# Artifact full name
 RUNDECK_WAR=$RUNDECK_APPNAME-$RUNDECK_VERSION.war
+
+# Tomcat installer filename
+TOMCAT_INSTALLER=${TOMCAT_INSTALLER:-"apache-tomcat-7.0.70.exe"}
+
+# JRE Installer
+JRE_INSTALLER=${JRE_INSTALLER:-"apache-tomcat-7.0.70.exe"}
+
+# 7Zip Installer
+ZIP7_INSTALLER=${ZIP7_INSTALLER:-"7z1602-x64.exe"}
+
+
+# URL for rundeck artifacts
+ARTIFACTS_URL=https://s3-sa-east-1.amazonaws.com/rdeckpro-tests/WARs
 #ARTIFACTS_URL=https://s3.amazonaws.com/dev.download.simplifyops.com
-ARTIFACTS_URL=https://s3-sa-east-1.amazonaws.com/rdeckpro-tests
+
+# URL for installers
+SOFTWARE_URL=https://s3-sa-east-1.amazonaws.com/rdeckpro-tests/software
