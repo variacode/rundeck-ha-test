@@ -34,6 +34,7 @@ fi
 
 # RUNDECK
 echo "Downloading Rundeck WAR"
+rm -fv $FILESDIR/rundeckpro.war
 wget -O $FILESDIR/rundeckpro.war $ARTIFACTS_URL/$RUNDECK_WAR
 
 
